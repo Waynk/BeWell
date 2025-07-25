@@ -92,7 +92,11 @@ async function insertIntoDatabase(rows, userId) {
     // 轉換日期格式，取日期部分（yyyy-mm-dd）
 
     const originalDate = row["測量日期"];
-    const formattedDate = originalDate.split("T")[0];
+
+    const date = new Date(originalDate);
+    date.setHours(date.getHours() + 0); // 加8小時
+
+    const formattedDate = date.toISOString().split("T")[0];
 
     // 檢查資料是否已存在（以 measure_at, systolic_mmHg, diastolic_mmHg, pulse_bpm, user_id 唯一判斷）
     const [results] = await db.execute(
