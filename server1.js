@@ -88,24 +88,17 @@ function tokenRequired(req, res, next) {
 async function insertIntoDatabase(rows, userId) {
   const valuesToInsert = [];
 
-  // 建立所有要查詢的資料組合 key: `${date}_${systolic}_${diastolic}_${pulse}`
-  const keysToCheck = rows.map((row) => {
-    const date = row["測量日期"].split("T")[0];
-    return `${date}_${row["收縮壓(mmHg)"]}_${row["舒張壓(mmHg)"]}_${row["脈搏(bpm)"]}`;
-  });
-
-  // 從資料庫查出所有已存在的資料
+  // 從資料庫撈出該 user_id 所有的資料
   const [existingRows] = await db.query(
     `
     SELECT measure_at, systolic_mmHg, diastolic_mmHg, pulse_bpm
     FROM BloodPressure
     WHERE user_id = ?
-      AND CONCAT(measure_at, '_', systolic_mmHg, '_', diastolic_mmHg, '_', pulse_bpm) IN (?)
     `,
-    [userId, keysToCheck]
+    [userId]
   );
 
-  // 建立已存在資料的 Set
+  // 建立 Set 儲存所有現有的 key
   const existingSet = new Set(
     existingRows.map(
       (row) =>
@@ -113,6 +106,7 @@ async function insertIntoDatabase(rows, userId) {
     )
   );
 
+  // 檢查每筆新資料是否存在
   for (const row of rows) {
     const formattedDate = row["測量日期"].split("T")[0];
     const key = `${formattedDate}_${row["收縮壓(mmHg)"]}_${row["舒張壓(mmHg)"]}_${row["脈搏(bpm)"]}`;
@@ -139,6 +133,7 @@ async function insertIntoDatabase(rows, userId) {
     }
   }
 
+  // 執行 INSERT
   if (valuesToInsert.length > 0) {
     const insertQuery = `
       INSERT INTO BloodPressure
@@ -147,12 +142,11 @@ async function insertIntoDatabase(rows, userId) {
        test_mode, device_model, user_id)
       VALUES ?
     `;
-
     const [result] = await db.query(insertQuery, [valuesToInsert]);
-    console.log(`成功插入 ${result.affectedRows} 筆資料`);
+    console.log(`✅ 成功插入 ${result.affectedRows} 筆資料`);
     return result;
   } else {
-    console.log("沒有需要插入的新資料");
+    console.log("✅ 沒有需要插入的新資料");
     return;
   }
 }
