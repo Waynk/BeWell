@@ -88,30 +88,42 @@ function tokenRequired(req, res, next) {
 async function insertIntoDatabase(rows, userId) {
   const valuesToInsert = [];
 
-  // 從資料庫撈出該 user_id 所有的資料
-  const [existingRows] = await db.query(
-    `
-    SELECT measure_at, systolic_mmHg, diastolic_mmHg, pulse_bpm
-    FROM BloodPressure
-    WHERE user_id = ?
-    `,
-    [userId]
-  );
-
-  // 建立 Set 儲存所有現有的 key
-  const existingSet = new Set(
-    existingRows.map(
-      (row) =>
-        `${row.measure_at}_${row.systolic_mmHg}_${row.diastolic_mmHg}_${row.pulse_bpm}`
-    )
-  );
-
-  // 檢查每筆新資料是否存在
   for (const row of rows) {
-    const formattedDate = row["測量日期"].split("T")[0];
-    const key = `${formattedDate}_${row["收縮壓(mmHg)"]}_${row["舒張壓(mmHg)"]}_${row["脈搏(bpm)"]}`;
+    // 轉換日期格式，取日期部分（yyyy-mm-dd）
 
-    if (!existingSet.has(key)) {
+    const originalDate = row["測量日期"];
+
+    const date = new Date(originalDate);
+    date.setHours(date.getHours() + 8); // 加8小時
+
+    const formattedDate = date.toISOString().split("T")[0];
+
+    // 檢查資料是否已存在（以 measure_at, systolic_mmHg, diastolic_mmHg, pulse_bpm, user_id 唯一判斷）
+    const [results] = await db.execute(
+      `
+      SELECT COUNT(*) AS count
+      FROM BloodPressure
+      WHERE measure_at = ?
+        AND systolic_mmHg = ?
+        AND diastolic_mmHg = ?
+        AND pulse_bpm = ?
+        AND user_id = ?
+      `,
+      [
+        formattedDate,
+        row["收縮壓(mmHg)"],
+        row["舒張壓(mmHg)"],
+        row["脈搏(bpm)"],
+        userId,
+      ]
+    );
+
+    console.log(
+      `查詢結果 for ${formattedDate} - ${row["收縮壓(mmHg)"]}, ${row["舒張壓(mmHg)"]}, ${row["脈搏(bpm)"]}, user_id=${userId}: `,
+      results[0].count
+    );
+
+    if (results[0].count === 0) {
       valuesToInsert.push([
         formattedDate || null,
         row["時區"] || null,
@@ -126,14 +138,13 @@ async function insertIntoDatabase(rows, userId) {
         row["室温(°C)"] || null,
         row["測試模式"] || null,
         row["型號"] || null,
-        userId,
+        userId, // 新增 user_id 欄位
       ]);
     } else {
-      console.log(`資料已存在，跳過插入: ${key}`);
+      console.log("資料已存在，跳過插入");
     }
   }
 
-  // 執行 INSERT
   if (valuesToInsert.length > 0) {
     const insertQuery = `
       INSERT INTO BloodPressure
@@ -142,11 +153,12 @@ async function insertIntoDatabase(rows, userId) {
        test_mode, device_model, user_id)
       VALUES ?
     `;
+
     const [result] = await db.query(insertQuery, [valuesToInsert]);
-    console.log(`✅ 成功插入 ${result.affectedRows} 筆資料`);
+    console.log(`成功插入 ${result.affectedRows} 筆資料`);
     return result;
   } else {
-    console.log("✅ 沒有需要插入的新資料");
+    console.log("沒有需要插入的新資料");
     return;
   }
 }
