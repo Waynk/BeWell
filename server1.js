@@ -28,12 +28,12 @@ const DEPLOYMENT_NAME = process.env.DEPLOYMENT_NAME;
 const API_VERSION = process.env.API_VERSION;
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  timezone: process.env.DB_TIMEZONE,
+  host: process.env.MYSQL_HOST || "metro.proxy.rlwy.net",
+  port: Number(process.env.MYSQL_PORT) || 31311,
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD || "ftKBvQlApCeRAcMjPKkhbhfNIxhfGtfY",
+  database: process.env.MYSQL_DATABASE || "railway",
+  timezone: process.env.DB_TIMEZONE || "+08:00",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
