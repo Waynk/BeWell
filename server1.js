@@ -791,11 +791,11 @@ app.get("/get_combined_records", async (req, res) => {
         bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
         wr.weight, wr.height AS weight_height,
         CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at
-        FROM BloodPressure bp
-        JOIN Users u ON u.user_id = bp.user_id
-        LEFT JOIN weight_records wr 
-          ON wr.username = u.username  
-        AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
+      FROM BloodPressure bp
+      JOIN Users u ON u.user_id = bp.user_id
+      LEFT JOIN weight_records wr 
+        ON wr.username COLLATE utf8mb4_unicode_ci = u.username COLLATE utf8mb4_unicode_ci
+       AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
       WHERE u.username = ?
       ORDER BY bp.measure_at ASC
       `,
