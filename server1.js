@@ -482,136 +482,102 @@ app.post("/upload", upload.single("csvFile"), async (req, res) => {
 
 //-----------------------------------------(建一)-----------------------------------------------------
 
-// ===== 分析邏輯函式 =====
-function evaluateBloodPressure(systolic, diastolic) {
-  if (systolic >= 140 || diastolic >= 90)
-    return [
-      "高血壓（危險）",
-      "⚠️ 建議立即就醫、服藥與生活調整",
-      "心血管影響、腎功能惡化、中風",
-      "高級",
-    ];
-  if ((120 <= systolic && systolic < 130) || diastolic === 80)
-    return [
-      "血壓偏高",
-      "🟡 留意生活壓力與鹽分攝取",
-      "初期尚無症狀，應提早預防",
-      "初級",
-    ];
-  if (systolic < 90 || diastolic < 60)
-    return [
-      "低血壓",
-      "🌀 建議補充水分與營養，避免久站與劇烈運動",
-      "可能出現疲倦、暈眩，甚至昏厥",
-      "中級",
-    ];
-  if (90 <= systolic && systolic <= 120 && 60 <= diastolic && diastolic <= 80)
-    return ["正常", "✅ 血壓正常，請持續維持健康生活", "無", "正常"];
-  return [null, null, null, null];
-}
+async function analyzeWithGPT(username, summaryText) {
+  const url = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
 
-function evaluatePulse(pulse) {
-  if (pulse > 120)
-    return [
-      "脈搏過高",
-      "可能有心律不整，建議就醫",
-      "心律不整、焦慮、自律神經異常",
-      "高級",
-    ];
-  if (pulse > 100)
-    return ["高脈搏", "可能過度緊張或心臟問題", "心臟負荷過大", "中級"];
-  if (pulse < 50)
-    return ["脈搏過低", "可能心搏過緩", "心搏過緩、血流不足", "中級"];
-  if (pulse < 60) return ["低脈搏", "需觀察是否頭暈疲勞", "暈眩、虛弱", "中級"];
-  return [null, null, null, null];
-}
+  // Debug log
+  console.log(`📤 GPT 輸入 (${username}):\n${summaryText}`);
 
-function calculateOverallRisk(tags) {
-  if (tags.includes("高級")) return "高級";
-  if (tags.includes("中級")) return "中級";
-  return "初級";
-}
+  const messages = [
+    {
+      role: "system",
+      content: "你是一位健康分析小幫手，專門協助中老年人做健康建議。",
+    },
+    {
+      role: "user",
+      content: `
+請分析以下使用者「${username}」的健康摘要資料，並以【條列式】＋【加入 Emoji】的方式回答下列問題。
+⚠️ 請注意：
+- 不要使用 Markdown 語法（如 ###、**、- 等符號）
+- 回覆請保持簡潔、換行分段、乾淨清楚
 
-function crossInference(results) {
-  const cross = [];
-  if (results.includes("高血壓") && results.includes("高脈搏"))
-    cross.push("高血壓合併高脈搏：心臟負擔過重，需控制血壓與心跳");
-  if (results.includes("低血壓") && results.includes("低脈搏"))
-    cross.push("低血壓合併低脈搏：可能為休克前兆，建議就醫");
-  if (
-    results.includes("肌低症") &&
-    (results.includes("體重過低") || results.includes("體重偏輕"))
-  )
-    cross.push("肌肉流失與體重不足：有衰弱症風險");
-  if (results.includes("高血壓") && results.includes("體重過重"))
-    cross.push("代謝症候群風險上升");
-  if (
-    results.includes("高血壓") &&
-    results.includes("高脈搏") &&
-    results.includes("體重過重")
-  )
-    cross.push("三重風險：可能進入代謝症候群，需立即改善生活方式");
-  return cross;
-}
+🩺 1. 是否健康異常？
+請簡要說明健康狀態，若有異常，請列出異常類型與數值（如高血壓、低脈搏）
 
-function analyzeRow(row) {
-  const results = [],
-    advices = [],
-    diseases = [],
-    tags = [];
+📈 2. 是否有趨勢變化？
+如：近期血壓上升、體重逐步下降等，請簡明扼要說明
 
-  const bp = evaluateBloodPressure(row.systolic_mmHg, row.diastolic_mmHg);
-  const pulse = evaluatePulse(row.pulse_bpm);
+💡 3. 給出健康建議（適合中老年人）
+每類建議最多 2 點，請精簡扼要。可包含：
+- 血壓建議
+- 體重管理
+- 飲食與運動
+- 睡眠習慣等
 
-  [bp, pulse].forEach(([res, adv, dis, tag]) => {
-    if (res) {
-      results.push(res);
-      advices.push(adv);
-      diseases.push(dis);
-      tags.push(tag);
+⚠️ 4. 注意事項
+若包含焦慮或血壓、體重同時異常，請提醒注意
+
+請使用【繁體中文】，語氣溫和親切，容易理解。
+
+健康摘要資料如下：
+${summaryText}`.trim(),
+    },
+  ];
+
+  try {
+    const response = await axios.post(
+      url,
+      {
+        messages,
+        temperature: 0.7,
+        max_tokens: 1000,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": AZURE_API_KEY,
+        },
+        timeout: 20000,
+      }
+    );
+
+    if (!response.data.choices || response.data.choices.length === 0) {
+      console.warn("⚠️ GPT 回傳空白");
+      return "⚠️ GPT 無回應，請稍後再試。";
     }
-  });
 
-  return {
-    user: row.display_name,
-    record_date: row.measure_at,
-    age: row.age,
-    gender: row.gender,
-    風險等級: calculateOverallRisk(tags),
-    分析結果: results,
-    建議: advices,
-    交叉狀況: crossInference(results),
-    可能病症: diseases,
-  };
+    const reply = response.data.choices[0].message?.content?.trim();
+    return reply || "⚠️ GPT 回傳內容為空白。";
+  } catch (err) {
+    console.error("❌ GPT 分析失敗：", err.response?.data || err.message);
+    return "❌ GPT 分析失敗，請稍後再試。";
+  }
 }
 
-async function analyzeAllAggregate(rows, userName) {
-  const combinedResults = new Set();
-  const combinedAdvices = new Set();
-  const combinedCross = new Set();
-  const combinedDiseases = new Set();
-  const riskTags = [];
+function summarizeBPRecords(rows) {
+  return rows
+    .map((row) => {
+      const date = new Date(row.measure_at).toISOString().split("T")[0];
+      return `【${date}】血壓：${row.systolic_mmHg}/${row.diastolic_mmHg}，脈搏：${row.pulse_bpm}`;
+    })
+    .join("\n");
+}
 
-  rows.forEach((row) => {
-    const r = analyzeRow(row);
-    r.分析結果.forEach((x) => combinedResults.add(x));
-    r.建議.forEach((x) => combinedAdvices.add(x));
-    r.交叉狀況.forEach((x) => combinedCross.add(x));
-    r.可能病症.forEach((x) => combinedDiseases.add(x));
-    riskTags.push(r.風險等級);
-  });
+function summarizeWeightRecords(rows) {
+  return rows
+    .map((row) => {
+      const date = new Date(row.measured_at).toISOString().split("T")[0];
+      const bmi = (row.weight / (row.height / 100) ** 2).toFixed(1);
+      return `【${date}】體重：${row.weight} 公斤，BMI：${bmi}`;
+    })
+    .join("\n");
+}
 
-  return {
-    user: userName,
-    record_date: "全部資料",
-    gender: rows[0]?.gender || "未知",
-    age: rows[0]?.age || null,
-    風險等級: calculateOverallRisk(riskTags),
-    分析結果: Array.from(combinedResults),
-    建議: Array.from(combinedAdvices),
-    交叉狀況: Array.from(combinedCross),
-    可能病症: Array.from(combinedDiseases),
-  };
+// 切分陣列工具（每 chunkSize 筆為一組）
+function splitIntoChunks(arr, chunkSize) {
+  return Array.from({ length: Math.ceil(arr.length / chunkSize) }, (_, i) =>
+    arr.slice(i * chunkSize, i * chunkSize + chunkSize)
+  );
 }
 
 // ──────────── API Routes ────────────
@@ -670,160 +636,175 @@ app.get("/get_exercises", async (req, res) => {
   }
 });
 
-// 取得所有使用者
-app.get("/get_users", async (req, res) => {
-  try {
-    const [rows] = await healthPool.query(
-      `SELECT DISTINCT display_name FROM Users`
-    );
-    res.json(rows.map((r) => r.display_name));
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// 取得指定使用者可用日期
-app.get("/dates/:user", async (req, res) => {
-  try {
-    const [rows] = await healthPool.query(
-      `SELECT DATE_FORMAT(bp.measure_at, '%Y-%m-%d') AS measure_at
-       FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ?
-       GROUP BY measure_at
-       ORDER BY measure_at DESC`,
-      [req.params.user]
-    );
-    res.json(rows.map((r) => r.measure_at));
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// 單筆分析
-app.get("/analyzeSingle", async (req, res) => {
-  const { user, date } = req.query;
-  if (!user || !date)
-    return res.status(400).json({ error: "請提供 user 與 date" });
-
-  try {
-    const [rows] = await healthPool.query(
-      `SELECT bp.*, u.height, u.weight
-       FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ?
-         AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = ?
-       LIMIT 1`,
-      [user, date]
-    );
-    if (!rows.length) return res.status(404).json({ error: "找不到該筆紀錄" });
-
-    res.json(analyzeRow(rows[0]));
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.get("/analyzeAllAggregate", async (req, res) => {
-  const user = req.query.user;
-  if (!user) return res.status(400).json({ error: "請提供 user" });
+// 單日血壓分析
+app.get("/analyzeSingleBP", async (req, res) => {
+  const { username, date } = req.query;
+  if (!username || !date)
+    return res.status(400).json({ error: "請提供 username 與 date" });
 
   try {
     const [rows] = await healthPool.query(
       `SELECT u.display_name, u.age, u.gender, u.height, u.weight,
-              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
-              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm
+              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
+              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at
        FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ?
+       JOIN Users u ON u.user_id = bp.user_id
+       WHERE u.username = ? AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = ?
        ORDER BY bp.measure_at ASC`,
-      [user]
+      [username, date]
     );
 
-    if (!rows.length)
-      return res.status(404).json({ error: "該使用者沒有任何紀錄" });
+    if (rows.length === 0)
+      return res.status(404).json({ error: "查無該日血壓資料" });
 
-    res.json(await analyzeAllAggregate(rows, user));
+    const displayName = rows[0]?.display_name || username;
+    const summary = summarizeBPRecords(rows);
+    const gptResult = await analyzeWithGPT(displayName, summary);
+    res.json({ analysis: gptResult });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: "內部錯誤" });
   }
 });
 
-app.get("/get_records", async (req, res) => {
-  const user = req.query.user;
-  if (!user) return res.status(400).json({ error: "請提供 user" });
+// 區間血壓分析
+app.get("/analyzeRangeBP", async (req, res) => {
+  const { username, start, end } = req.query;
+  if (!username || !start || !end)
+    return res
+      .status(400)
+      .json({ error: "請提供 username、start 與 end 日期" });
 
   try {
     const [rows] = await healthPool.query(
       `SELECT u.display_name, u.age, u.gender, u.height, u.weight,
-              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
-              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm
+              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
+              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at
        FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ?
+       JOIN Users u ON u.user_id = bp.user_id
+       WHERE u.username = ? AND bp.measure_at BETWEEN ? AND ?
        ORDER BY bp.measure_at ASC`,
-      [user]
+      [username, start, end]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ error: "該區間無血壓資料" });
+
+    const displayName = rows[0]?.display_name || username;
+    const chunks = splitIntoChunks(rows, 7);
+    const results = [];
+
+    for (const chunk of chunks) {
+      const summary = summarizeBPRecords(chunk);
+      const result = await analyzeWithGPT(displayName, summary);
+      results.push(result);
+    }
+
+    res.json({ analysis: results.join("\n\n") });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "內部錯誤" });
+  }
+});
+
+// 單日體重分析
+app.get("/analyzeSingleWeight", async (req, res) => {
+  const { username, date } = req.query;
+  if (!username || !date)
+    return res.status(400).json({ error: "請提供 username 與 date" });
+
+  try {
+    const [rows] = await healthPool.query(
+      `SELECT u.display_name, u.age, u.gender,
+              w.weight, w.height,
+              CONVERT_TZ(w.measured_at, '+00:00', '+08:00') AS measured_at
+       FROM weight_records w
+       JOIN Users u ON u.username = w.username
+       WHERE u.username = ? AND DATE(CONVERT_TZ(w.measured_at, '+00:00', '+08:00')) = ?
+       ORDER BY w.measured_at ASC`,
+      [username, date]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ error: "查無該日體重資料" });
+
+    const summary = summarizeWeightRecords(rows);
+    const gptResult = await analyzeWithGPT(displayName, summary);
+    const displayName = rows[0]?.display_name || username;
+    res.json({ analysis: gptResult });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "內部錯誤" });
+  }
+});
+
+// 區間體重分析
+app.get("/analyzeRangeWeight", async (req, res) => {
+  const { username, start, end } = req.query;
+  if (!username || !start || !end)
+    return res
+      .status(400)
+      .json({ error: "請提供 username、start 與 end 日期" });
+
+  try {
+    const [rows] = await healthPool.query(
+      `SELECT u.display_name, u.age, u.gender,
+              w.weight, w.height,
+              CONVERT_TZ(w.measured_at, '+00:00', '+08:00') AS measured_at
+       FROM weight_records w
+       JOIN Users u ON u.username = w.username
+       WHERE u.username = ? AND w.measured_at BETWEEN ? AND ?
+       ORDER BY w.measured_at ASC`,
+      [username, start, end]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ error: "該區間無體重資料" });
+
+    const displayName = rows[0]?.display_name || username;
+    const chunks = splitIntoChunks(rows, 7);
+    const results = [];
+
+    for (const chunk of chunks) {
+      const summary = summarizeWeightRecords(chunk);
+      const result = await analyzeWithGPT(displayName, summary);
+      results.push(result);
+    }
+
+    res.json({ analysis: results.join("\n\n") });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "內部錯誤" });
+  }
+});
+
+app.get("/get_combined_records", async (req, res) => {
+  const username = req.query.username;
+  if (!username) return res.status(400).json({ error: "請提供 username" });
+
+  try {
+    const [rows] = await healthPool.query(
+      `
+      SELECT 
+        u.display_name, u.age, u.gender,
+        CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
+        bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
+        wr.weight, wr.height AS weight_height,
+        CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at
+        FROM BloodPressure bp
+        JOIN Users u ON u.user_id = bp.user_id
+        LEFT JOIN weight_records wr 
+          ON wr.username = u.username  
+        AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
+      WHERE u.username = ?
+      ORDER BY bp.measure_at ASC
+      `,
+      [username]
     );
 
     if (!rows.length) return res.status(404).json({ error: "沒有資料" });
 
     res.json(rows);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.get("/analyzeRange", async (req, res) => {
-  const { user, start_date } = req.query;
-  if (!user || !start_date)
-    return res.status(400).json({ error: "請提供 user 與 start_date" });
-
-  try {
-    const [rows] = await healthPool.query(
-      `SELECT u.display_name, u.age, u.gender, u.height, u.weight,
-              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
-              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm
-       FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ? AND bp.measure_at >= ?
-       ORDER BY bp.measure_at ASC`,
-      [user, start_date]
-    );
-
-    if (!rows.length) return res.status(404).json({ error: "該期間無資料" });
-
-    res.json(await analyzeAllAggregate(rows, user));
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.get("/analyze/custom_range", async (req, res) => {
-  const { user, start, end } = req.query;
-  if (!user || !start || !end)
-    return res.status(400).json({ error: "缺少必要參數" });
-
-  try {
-    const [rows] = await healthPool.query(
-      `SELECT u.display_name, u.age, u.gender, u.height, u.weight,
-              CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
-              bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm
-       FROM BloodPressure bp
-       JOIN Users u ON bp.user_id = u.user_id
-       WHERE u.display_name = ? AND bp.measure_at BETWEEN ? AND ?
-       ORDER BY bp.measure_at ASC`,
-      [user, start, end]
-    );
-
-    if (!rows.length) return res.status(404).json({ error: "查無資料" });
-
-    res.json(await analyzeAllAggregate(rows, user));
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e.message });
