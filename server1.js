@@ -480,6 +480,61 @@ app.post("/upload", upload.single("csvFile"), async (req, res) => {
   }
 });
 
+// 1️⃣ 透過 username 取得 user_id
+app.get("/get_user_id", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "缺少 username" });
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT user_id FROM Users WHERE username = ?",
+      [username]
+    );
+    if (rows.length === 0)
+      return res.status(404).json({ error: "使用者不存在" });
+
+    res.json(rows[0].user_id); // 回傳 user_id
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "伺服器錯誤" });
+  }
+});
+
+// 2️⃣ 取得指定日期範圍血壓資料
+app.get("/get_blood_pressure_range", async (req, res) => {
+  const { userId, startDate, endDate } = req.query;
+  if (!userId || !startDate || !endDate)
+    return res.status(400).json({ error: "缺少參數" });
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM BloodPressure WHERE user_id = ? AND measure_at BETWEEN ? AND ? ORDER BY measure_at ASC",
+      [userId, startDate, endDate]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "伺服器錯誤" });
+  }
+});
+
+// 3️⃣ 刪除多筆血壓資料
+app.post("/delete_blood_pressure_multiple", async (req, res) => {
+  const { userId, ids } = req.body;
+  if (!userId || !ids || !Array.isArray(ids) || ids.length === 0)
+    return res.status(400).json({ error: "缺少參數" });
+
+  try {
+    const placeholders = ids.map(() => "?").join(",");
+    const sql = `DELETE FROM BloodPressure WHERE user_id = ? AND id IN (${placeholders})`;
+    await pool.query(sql, [userId, ...ids]);
+    res.json({ message: "刪除成功" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "伺服器錯誤" });
+  }
+});
+
 //-----------------------------------------(建一)-----------------------------------------------------
 
 async function analyzeWithGPT(username, summaryText) {
