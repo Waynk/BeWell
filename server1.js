@@ -501,6 +501,7 @@ app.get("/get_user_id", async (req, res) => {
 });
 
 // 2️⃣ 取得指定日期範圍血壓資料
+// 取得指定日期範圍血壓資料 (轉換成台灣時間)
 app.get("/get_blood_pressure_range", async (req, res) => {
   const { userId, startDate, endDate } = req.query;
   if (!userId || !startDate || !endDate)
@@ -508,7 +509,11 @@ app.get("/get_blood_pressure_range", async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM BloodPressure WHERE user_id = ? AND measure_at BETWEEN ? AND ? ORDER BY measure_at ASC",
+      `SELECT id, user_id, systolic, diastolic, 
+       CONVERT_TZ(measure_at, '+00:00', '+08:00') AS measure_at
+       FROM BloodPressure 
+       WHERE user_id = ? AND measure_at BETWEEN ? AND ? 
+       ORDER BY measure_at ASC`,
       [userId, startDate, endDate]
     );
     res.json(rows);
@@ -518,7 +523,7 @@ app.get("/get_blood_pressure_range", async (req, res) => {
   }
 });
 
-// 3️⃣ 刪除多筆血壓資料
+// 刪除多筆血壓資料
 app.post("/delete_blood_pressure_multiple", async (req, res) => {
   const { userId, ids } = req.body;
   if (!userId || !ids || !Array.isArray(ids) || ids.length === 0)
