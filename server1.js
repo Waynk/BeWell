@@ -1267,6 +1267,204 @@ app.get("/api/daily-quote", async (req, res) => {
   }
 });
 
+//----------------------------------------(建新增)----------------------------------------------------
+
+// 常見地區映射（可擴充）
+const REGION_MAP = {
+  台北: "台北",
+  臺北: "台北",
+  台北市: "台北",
+  臺北市: "台北",
+  新北: "新北",
+  新北市: "新北",
+  桃園: "桃園",
+  桃園市: "桃園",
+  新竹: "新竹",
+  新竹市: "新竹",
+  新竹縣: "新竹",
+  台中: "台中",
+  臺中: "台中",
+  台中市: "台中",
+  臺中市: "台中",
+  台南: "台南",
+  臺南: "台南",
+  高雄: "高雄",
+  高雄市: "高雄",
+};
+
+function normalizeText(s = "") {
+  return String(s)
+    .trim()
+    .replace(/[臺台]/g, "台")
+    .replace(/\s+/g, "")
+    .toLowerCase();
+}
+
+// 從口語文字抓地區（例如：「桃園」、「台北長庚」會抓出桃園或台北）
+function parseRegionFromText(text = "") {
+  for (const k of Object.keys(REGION_MAP)) {
+    if (text.includes(k)) return REGION_MAP[k];
+  }
+  return ""; // 沒講就留空
+}
+
+// 依「名稱 + 優先地區」找醫院（優先回傳指定地區的分院）
+async function findHospitalByNameWithRegion(db, name, regionPreferred = "") {
+  const [rows] = await db.query(
+    "SELECT id, name, region, url FROM hospitals LIMIT 1000"
+  );
+
+  const targetName = normalizeText(name);
+  const targetRegion = normalizeText(regionPreferred);
+
+  const withRegion = [];
+  const others = [];
+
+  for (const r of rows) {
+    const nm = normalizeText(r.name);
+    const rg = normalizeText(r.region);
+
+    // 非常鬆的名稱相似度：完全相等 > 互相包含
+    const score =
+      nm === targetName
+        ? 1.0
+        : nm.includes(targetName) || targetName.includes(nm)
+        ? 0.9
+        : 0.0;
+
+    if (score === 0) continue;
+    (rg === targetRegion ? withRegion : others).push({ ...r, _score: score });
+  }
+
+  const pickBest = (arr) => arr.sort((a, b) => b._score - a._score)[0] || null;
+  return pickBest(withRegion) || pickBest(others) || null;
+}
+
+// === ★ AI 自動化：語意解析 ===
+app.post("/api/ai/automation", async (req, res) => {
+  const { username, text } = req.body || {};
+  if (!username || !text)
+    return res.status(400).json({ ok: false, error: "username 與 text 必填" });
+
+  try {
+    const [hospitals] = await db.query(
+      "SELECT id, name FROM hospitals LIMIT 100"
+    );
+    const hospitalsContext = hospitals
+      .map((h) => `${h.id}:${h.name}`)
+      .join("\n");
+
+    const SYSTEM_PROMPT = `
+你是健康管理 App 的「語意解析器」。只輸出 JSON，不要任何多餘文字或 Markdown。
+時間請以 Asia/Taipei 轉換「今天/明天/後天」為 YYYY-MM-DD；無時間預設 08:00；無日期預設今天。
+僅允許 intent 為：book_hospital | unknown
+JSON 結構如下：
+{
+  "ok": true/false,
+  "intent": "book_hospital | unknown",
+  "username": "string",
+  "payload": {
+    "title": "string",
+    "notes": "string",
+    "date": "YYYY-MM-DD",
+    "time": "HH:mm",
+    "hospital": {
+      "hospital_id": number,
+      "name": "string",
+      "region": "string",
+      "department": "string",
+      "doctor": "string"
+    },
+    "navigatesTo": "MainActivity5"
+  },
+  "speakback": "string"
+}
+判斷參考：
+- 出現「掛號、預約門診、看診」→ intent 設為 book_hospital（navigatesTo=MainActivity5）
+請嚴格輸出 JSON。
+`.trim();
+    const userPrompt = `
+使用者：${username}
+可參考醫院清單（部分）：\n${hospitalsContext}
+語句：${text}
+請依結構嚴格輸出 JSON。
+    `.trim();
+
+    const url = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
+    const response = await axios.post(
+      url,
+      {
+        response_format: { type: "json_object" },
+        temperature: 0.1,
+        max_tokens: 500,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": AZURE_API_KEY,
+        },
+        timeout: 20000,
+      }
+    );
+
+    const parsed = JSON.parse(
+      response.data.choices?.[0]?.message?.content || "{}"
+    );
+    parsed.username = username;
+
+    // ★★★ 補上：若意圖是掛號，依地區挑對分院（避免回到台北分院）
+    if (parsed.intent === "book_hospital") {
+      // 1) 從 LLM 結果或原句中取得「醫院名稱」與「地區」
+      const userText = text || "";
+      const llmHospitalName = parsed?.payload?.hospital?.name || ""; // 如果 LLM 有給名稱
+      const regionFromLLM = parsed?.payload?.hospital?.region || ""; // 如果 LLM 有給地區
+      const regionFromText = parseRegionFromText(userText); // 從口語再抓一次
+
+      const finalRegion = regionFromLLM || regionFromText || ""; // 例如「桃園」
+
+      // 2) 有醫院名稱才找；沒有名稱時你也可以用簡單關鍵字去抓（此處簡化）
+      const hospitalNameHint = llmHospitalName || ""; // 建議也把「長庚」這種關鍵字交給 LLM 生成
+
+      if (hospitalNameHint) {
+        const matched = await findHospitalByNameWithRegion(
+          db,
+          hospitalNameHint,
+          finalRegion
+        );
+        if (matched) {
+          parsed.payload = parsed.payload || {};
+          parsed.payload.hospital = {
+            ...(parsed.payload.hospital || {}),
+            hospital_id: matched.id,
+            name: matched.name,
+            region: matched.region,
+          };
+          parsed.payload.hospital_url = matched.url || "";
+        }
+      }
+
+      // 3) 即使沒找到也把 region 放入 payload，讓前端能切對地區
+      parsed.payload = parsed.payload || {};
+      parsed.payload.hospital = parsed.payload.hospital || {};
+      if (!parsed.payload.hospital.region && finalRegion) {
+        parsed.payload.hospital.region = finalRegion;
+      }
+    }
+
+    return res.json(parsed);
+  } catch (err) {
+    console.error(
+      "❌ /api/ai/automation 失敗：",
+      err.response?.data || err.message
+    );
+    return res.status(500).json({ ok: false, error: "automation_failed" });
+  }
+});
+
 //----------------------------------------(註冊家庭)----------------------------------------------------
 
 // 1️⃣ 註冊
