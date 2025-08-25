@@ -1010,7 +1010,7 @@ app.post("/api/chat", async (req, res) => {
   }
 
   // ✅ 一次讓 GPT 判斷是否為健康問題＋是否要查資料庫
-  const { isHealth, needsDatabase } = await (async () => {
+  const { isHealth, needsDatabase, isChitchat } = await (async () => {
     const url = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
     const messages = [
       {
@@ -1019,9 +1019,12 @@ app.post("/api/chat", async (req, res) => {
         {
           "isHealth": true/false,
           "needsDatabase": true/false
+          "isChitchat": true/false
         }
-        若與健康、醫療、疾病、量測、飲食、身體、心理有關，isHealth 為 true，否則 false。
-        若需要查詢健康資料庫（例如血壓紀錄、體重紀錄等），needsDatabase 為 true，否則 false。`,
+        說明：
+        - 若與健康、醫療、量測、飲食、身體、心理有關，isHealth 為 true。
+        - 若需要查詢健康紀錄（如血壓、體重等），needsDatabase 為 true。
+        - 若是閒聊（例如：心情低落、想找人聊天、詢問建議、日常對話），isChitchat 為 true。`,
       },
       {
         role: "user",
@@ -1047,12 +1050,53 @@ app.post("/api/chat", async (req, res) => {
       return {
         isHealth: parsed.isHealth === true,
         needsDatabase: parsed.needsDatabase === true,
+        isChitchat: parsed.isChitchat === true,
       };
     } catch (err) {
       console.error("❌ GPT 判斷失敗：", err.message);
       return { isHealth: false, needsDatabase: false };
     }
   })();
+  if (isChitchat) {
+    const url = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
+
+    const messages = [
+      {
+        role: "system",
+        content: `你是一位溫柔的心靈陪伴者，會用溫暖、理解、充滿同理心的語氣回應使用者。
+      請像朋友一樣與使用者對話，具備同理心、鼓勵、安慰、幽默風趣的特質。
+      請根據使用者的語氣和內容給出適當的反應，避免使用過於醫學化或知識性太強的語句。
+      用自然的語言回覆，不要使用 Markdown 或 HTML，適合在手機閱讀。
+      例如：
+      - 使用者說「我今天有點不開心」➡️ 你可以回「我在這裡陪你，想聊聊發生什麼事嗎？」
+      - 使用者說「我好累喔」➡️ 可以回「辛苦了～記得好好休息，讓身體充個電 ❤️」`,
+      },
+      { role: "user", content: message },
+    ];
+
+    try {
+      const response = await axios.post(
+        url,
+        {
+          messages,
+          temperature: 0.8,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": AZURE_API_KEY,
+          },
+          timeout: 20000,
+        }
+      );
+
+      const reply = response.data.choices[0].message.content;
+      return res.json({ reply });
+    } catch (error) {
+      console.error("❌ GPT 陪聊模式失敗：", error.message);
+      return res.status(500).json({ error: "GPT 陪伴模式回覆失敗" });
+    }
+  }
 
   if (!isHealth) {
     return res.json({ reply: "⚠️ 抱歉，我目前只回覆健康與醫療相關的問題唷！" });
@@ -1269,6 +1313,158 @@ app.get("/api/daily-quote", async (req, res) => {
 
 //----------------------------------------(建新增)----------------------------------------------------
 
+app.post("/analyzeCombinedRecords", async (req, res) => {
+  const {
+    focus = "ALL",
+    systolic_mmHg,
+    diastolic_mmHg,
+    pulse_bpm,
+    weight_kg,
+    height_cm,
+    gender,
+    age,
+    measured_at,
+  } = req.body || {};
+
+  // 🔸 安全轉大寫、驗證 focus 參數
+  const FOCUS = ["BP", "PULSE", "WEIGHT", "ALL"].includes(
+    String(focus).toUpperCase()
+  )
+    ? String(focus).toUpperCase()
+    : "ALL";
+
+  // 🔸 若全空則回錯誤
+  if (
+    FOCUS === "ALL" &&
+    !systolic_mmHg &&
+    !diastolic_mmHg &&
+    !pulse_bpm &&
+    !weight_kg
+  ) {
+    return res.status(400).json({ error: "請提供至少一筆健康資料" });
+  }
+
+  // 🔸 判斷各欄位是否輸出
+  const sysStr =
+    FOCUS === "BP" || FOCUS === "ALL" ? systolic_mmHg ?? "無" : "無";
+  const diaStr =
+    FOCUS === "BP" || FOCUS === "ALL" ? diastolic_mmHg ?? "無" : "無";
+  const pulseStr =
+    FOCUS === "PULSE" || FOCUS === "ALL" ? pulse_bpm ?? "無" : "無";
+  const wStr = FOCUS === "WEIGHT" || FOCUS === "ALL" ? weight_kg ?? "無" : "無";
+
+  // 🔸 顯示文字對應
+  const focusHuman = {
+    BP: "血壓（收縮壓與舒張壓）",
+    PULSE: "脈搏",
+    WEIGHT: "體重",
+    ALL: "當日重點指標",
+  }[FOCUS];
+
+  // 🔸 GPT 系統提示
+  const systemPrompt = `
+  你是健康數據分析師，請根據提供的數據，回傳下列其中一項分類結果，格式如下：
+
+  「分類，建議」
+
+  分類只能是以下其中一種：
+    - 高血壓
+    - 血壓偏高
+    - 低血壓
+    - 脈搏太高
+    - 脈搏太低
+    - 血壓正常
+    - 脈搏正常
+    - 體重正常
+
+    建議部分請給一句繁體中文健康生活建議（約 20 字內）。
+
+    請根據 focus 指定的重點（BP / PULSE / WEIGHT）進行判斷：
+    - focus=BP：請根據收縮壓與舒張壓判斷
+    - focus=PULSE：請根據脈搏判斷
+    - focus=WEIGHT：請根據體重、身高、性別、年齡計算 BMI 判斷
+    
+    嚴格規範：
+    - 僅能回傳「分類，建議」這一句話
+    - 不得出現多餘說明、理由、語助詞、Markdown 或 JSON
+    `.trim();
+
+  const userPrompt = `
+  日期：${measured_at || "未知"}
+  收縮壓（mmHg）：${sysStr}
+  舒張壓（mmHg）：${diaStr}
+  脈搏（bpm）：${pulseStr}
+  體重（kg）：${wStr}
+  身高（cm）：${height_cm || "無"}
+  性別：${gender || "無"}
+  年齡：${age || "無"}
+  `.trim();
+
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
+
+  const url = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
+
+  // 🔸 狀態分類邏輯
+  function classifyStatus({
+    systolic_mmHg,
+    diastolic_mmHg,
+    pulse_bpm,
+    weight_kg,
+    height_cm,
+  }) {
+    if (systolic_mmHg >= 140 || diastolic_mmHg >= 90) return "高血壓";
+    if (
+      (systolic_mmHg >= 130 && systolic_mmHg < 140) ||
+      (diastolic_mmHg >= 85 && diastolic_mmHg < 90)
+    )
+      return "血壓偏高";
+    if (systolic_mmHg < 90 || diastolic_mmHg < 60) return "低血壓";
+    if (pulse_bpm > 120) return "脈搏太高";
+    if (pulse_bpm < 50) return "脈搏太低";
+    if (weight_kg && height_cm) {
+      const bmi = weight_kg / (height_cm / 100) ** 2;
+      if (bmi > 24) return "體重過重";
+      if (bmi < 18.5) return "體重過輕";
+    }
+    return "正常";
+  }
+
+  try {
+    const response = await axios.post(
+      url,
+      {
+        messages,
+        temperature: 0.6,
+        max_tokens: 500,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": AZURE_API_KEY,
+        },
+      }
+    );
+
+    const suggestion =
+      response.data.choices?.[0]?.message?.content?.trim() ||
+      "⚠️ GPT 回傳內容為空白";
+    const status = classifyStatus({
+      systolic_mmHg,
+      diastolic_mmHg,
+      pulse_bpm,
+      weight_kg,
+      height_cm,
+    });
+
+    res.json({ status, suggestion });
+  } catch (e) {
+    console.error("GPT 錯誤：", e.response?.data || e.message);
+    res.status(500).json({ error: "❌ GPT 分析失敗" });
+  }
+});
 // 常見地區映射（可擴充）
 const REGION_MAP = {
   台北: "台北",
