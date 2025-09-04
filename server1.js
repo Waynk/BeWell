@@ -783,7 +783,7 @@ app.get("/analyzeSingleWeight", async (req, res) => {
               w.weight, w.height,
               CONVERT_TZ(w.measured_at, '+00:00', '+08:00') AS measured_at
        FROM weight_records w
-       JOIN Users u ON u.username = w.username
+       JOIN Users u ON u.user_id = w.user_id 
        WHERE u.username = ? AND DATE(CONVERT_TZ(w.measured_at, '+00:00', '+08:00')) = ?
        ORDER BY w.measured_at ASC`,
       [username, date]
@@ -792,9 +792,11 @@ app.get("/analyzeSingleWeight", async (req, res) => {
     if (rows.length === 0)
       return res.status(404).json({ error: "查無該日體重資料" });
 
+    // ✅ 先取 displayName
+    const displayName = rows[0]?.display_name || username;
+    // ✅ 再生成 summary 與 GPT 分析
     const summary = summarizeWeightRecords(rows);
     const gptResult = await analyzeWithGPT(displayName, summary);
-    const displayName = rows[0]?.display_name || username;
     res.json({ analysis: gptResult });
   } catch (e) {
     console.error(e);
@@ -816,7 +818,7 @@ app.get("/analyzeRangeWeight", async (req, res) => {
               w.weight, w.height,
               CONVERT_TZ(w.measured_at, '+00:00', '+08:00') AS measured_at
        FROM weight_records w
-       JOIN Users u ON u.username = w.username
+       JOIN Users u ON u.user_id = w.user_id  
        WHERE u.username = ? AND w.measured_at BETWEEN ? AND ?
        ORDER BY w.measured_at ASC`,
       [username, start, end]
@@ -855,11 +857,11 @@ app.get("/get_combined_records", async (req, res) => {
         bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
         wr.weight, wr.height AS weight_height,
         CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at
-      FROM BloodPressure bp
-      JOIN Users u ON u.user_id = bp.user_id
-      LEFT JOIN weight_records wr 
-        ON wr.username COLLATE utf8mb4_unicode_ci = u.username COLLATE utf8mb4_unicode_ci
-       AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
+        FROM BloodPressure bp
+        JOIN Users u ON u.user_id = bp.user_id
+        LEFT JOIN weight_records wr 
+        ON wr.user_id = u.user_id
+        AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
       WHERE u.username = ?
       ORDER BY bp.measure_at ASC
       `,
@@ -1916,19 +1918,31 @@ app.get("/reminders/add", tokenRequired, async (req, res) => {
 app.post("/upload-weight", async (req, res) => {
   const { username, weight, gender, height, age } = req.body;
 
-  const sql = `
-    INSERT INTO weight_records (username, weight, gender, height, age)
-    VALUES (?, ?, ?, ?, ?)
-  `;
-
   try {
-    const [result] = await db.execute(sql, [
-      username,
-      weight,
+    // 先查詢 user_id 和 display_name
+    const [[user]] = await db.execute(
+      `SELECT user_id, display_name FROM Users WHERE username = ?`,
+      [username]
+    );
+
+    if (!user) {
+      return res.status(400).json({ error: "使用者不存在" });
+    }
+
+    const insertSql = `
+      INSERT INTO weight_records (user_id, display_name, gender, height, age, weight, measured_at)
+      VALUES (?, ?, ?, ?, ?, ?, NOW())
+    `;
+
+    const [result] = await db.execute(insertSql, [
+      user.user_id,
+      user.display_name,
       gender,
       height,
       age,
+      weight,
     ]);
+
     res.json({ message: "✅ 體重與基本資料已儲存", id: result.insertId });
   } catch (err) {
     console.error("❌ 資料庫寫入錯誤:", err);
@@ -1943,29 +1957,31 @@ app.get("/weight-history", async (req, res) => {
   try {
     let sql = `
       SELECT 
-        id,
-        username,
-        gender,
-        height,
-        age,
-        weight,
-        DATE_FORMAT(measured_at, '%Y-%m-%d %H:%i:%s') AS measured_at
-      FROM weight_records
+        wr.id,
+        u.username,
+        wr.display_name,
+        wr.gender,
+        wr.height,
+        wr.age,
+        wr.weight,
+        DATE_FORMAT(wr.measured_at, '%Y-%m-%d %H:%i:%s') AS measured_at
+      FROM weight_records wr
+      JOIN Users u ON wr.user_id = u.user_id
       WHERE 1=1
     `;
     const params = [];
 
     if (username) {
-      sql += " AND username = ?";
+      sql += " AND u.username = ?";
       params.push(username);
     }
 
     if (start && end) {
-      sql += " AND measured_at BETWEEN ? AND ?";
+      sql += " AND wr.measured_at BETWEEN ? AND ?";
       params.push(`${start} 00:00:00`, `${end} 23:59:59`);
     }
 
-    sql += " ORDER BY measured_at ASC";
+    sql += " ORDER BY wr.measured_at ASC";
 
     const [rows] = await db.execute(sql, params);
     res.json(rows);
