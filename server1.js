@@ -4,9 +4,9 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { google } = require("googleapis");
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2/promise"); // 使用 promise 版本
 const csv = require("csv-parser");
-const moment = require("moment");
+const moment = require("moment"); // 引入 moment.js 驗證日期格式
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const cors = require("cors");
@@ -43,7 +43,6 @@ const exercisePool = db;
 const healthPool = db;
 const pool = db;
 module.exports = pool;
-
 require("dotenv").config();
 
 (async () => {
@@ -1644,14 +1643,20 @@ app.get("/login", async (req, res) => {
   }
   try {
     const hashedPw = hashPw(p);
-    const sql = "SELECT 1 AS ok FROM Users WHERE username = ? AND password = ?";
+    const sql =
+      "SELECT display_name FROM Users WHERE username = ? AND password = ?";
     const [rows] = await db.query(sql, [u, hashedPw]);
 
     if (rows.length === 0) {
       return res.status(401).json({ error: "帳號或密碼錯誤" });
     }
+
     const token = genToken(u);
-    return res.json({ message: "登入成功", token });
+    return res.json({
+      message: "登入成功",
+      token,
+      display_name: rows[0].display_name,
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: err.message });
@@ -1988,6 +1993,108 @@ app.get("/weight-history", async (req, res) => {
   } catch (error) {
     console.error("❌ 查詢失敗：", error);
     res.status(500).json({ message: "查詢歷史資料失敗" });
+  }
+});
+
+// -------------------------(使用者個人資料管理：全部改用 GET)-------------------------
+
+// 1) 取得使用者資料
+//    GET /user/profile?username=<帳號>
+app.get("/user/profile", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "缺少 username" });
+
+  try {
+    const [rows] = await db.execute(
+      "SELECT user_id, username, display_name, gender, height, age FROM Users WHERE username = ?",
+      [username]
+    );
+    if (!rows.length) return res.status(404).json({ error: "找不到使用者" });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("❌ 查詢失敗:", err.message);
+    res.status(500).json({ error: "伺服器錯誤" });
+  }
+});
+
+// 2) 更新性別 / 身高 / 年齡（任一可選）
+//    GET /user/update-profile?username=<帳號>&gender=M|F|O&height=175&age=25
+app.get("/user/update-profile", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "缺少 username" });
+
+  // 解析與基本驗證（參數沒帶就不更新）
+  const gender = req.query.gender; // "M" | "F" | "O"（或你資料庫現在的值，例如 "男/女"）
+  const height = req.query.height ? parseInt(req.query.height, 10) : undefined;
+  const age = req.query.age ? parseInt(req.query.age, 10) : undefined;
+
+  if (gender && !["M", "F", "O", "男", "女"].includes(gender)) {
+    return res.status(400).json({ error: "gender 必須為 M/F/O（或 男/女）" });
+  }
+  if (height !== undefined && (isNaN(height) || height < 50 || height > 260)) {
+    return res.status(400).json({ error: "height 超出合理範圍" });
+  }
+  if (age !== undefined && (isNaN(age) || age < 1 || age > 120)) {
+    return res.status(400).json({ error: "age 超出合理範圍" });
+  }
+
+  try {
+    const [result] = await db.execute(
+      `UPDATE Users 
+       SET gender = COALESCE(?, gender),
+           height = COALESCE(?, height),
+           age    = COALESCE(?, age)
+       WHERE username = ?`,
+      [gender ?? null, height ?? null, age ?? null, username]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ error: "找不到使用者" });
+
+    res.json({ message: "✅ 個人資料已更新" });
+  } catch (err) {
+    console.error("❌ 更新失敗:", err.message);
+    res.status(500).json({ error: "伺服器錯誤" });
+  }
+});
+
+// 3) 更改密碼（需帶目前密碼與新密碼）
+//    ⚠️ 密碼放在 URL 風險高，請務必注意環境日誌與快取
+//    GET /user/change-password?username=<帳號>&current_password=<舊密碼>&new_password=<新密碼>
+app.get("/user/change-password", async (req, res) => {
+  const { username, current_password, new_password } = req.query;
+
+  if (!username || !current_password || !new_password) {
+    return res
+      .status(400)
+      .json({ error: "缺少必要欄位 username/current_password/new_password" });
+  }
+  if (String(new_password).length < 8) {
+    return res.status(400).json({ error: "新密碼至少 8 碼" });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      "SELECT password FROM Users WHERE username = ?",
+      [username]
+    );
+    if (!rows.length) return res.status(404).json({ error: "找不到使用者" });
+
+    const currentHashed = hashPw(current_password);
+    if (rows[0].password !== currentHashed) {
+      return res.status(401).json({ error: "目前密碼錯誤" });
+    }
+
+    const newHashed = hashPw(new_password);
+    await db.execute("UPDATE Users SET password = ? WHERE username = ?", [
+      newHashed,
+      username,
+    ]);
+
+    res.json({ message: "✅ 密碼已更新" });
+  } catch (err) {
+    console.error("❌ 密碼更新失敗:", err.message);
+    res.status(500).json({ error: "伺服器錯誤" });
   }
 });
 
