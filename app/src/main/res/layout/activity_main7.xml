@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/background_gradient"
+    android:padding="32dp">
+
+    <!-- 標題 -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="緊急定位支援"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#222222"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 插圖 -->
+    <ImageView
+        android:id="@+id/imgHelp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:src="@drawable/location_help"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="緊急插圖" />
+
+    <!-- 按鈕：分享位置 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnShareLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📍 分享我的位置"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:background="@drawable/rounded_blue_button"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp" />
+
+    <!-- 按鈕：我需要幫助 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNeedHelp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🆘 我需要幫助！"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="@drawable/rounded_red_button"
+        android:padding="12dp" />
+</LinearLayout>

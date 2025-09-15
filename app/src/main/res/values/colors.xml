@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="purple_800">#3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorAccent">#F44336</color>
+
+    <color name="colorPrimary">#4A90E2</color>
+    <color name="colorTextDark">#333333</color>
+    <color name="colorPrimaryDark">#1976D2</color> <!-- 深藍色 -->
+    <color name="colorTextGray">#444444</color>
+    <color name="colorBackgroundLight">#F7FAFC</color>
+    <color name="colorCardBackground">#E4ECF5</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+
+    <color name="primaryColor">#6200EE</color>
+    <color name="primary">#4CAF50</color> <!-- 綠色主色 -->
+    <color name="gray">#757575</color>
+    <color name="lightGray">#F5F5F5</color>
+    <color name="gender_male">#4DB6AC</color> <!-- 青綠色 -->
+    <color name="gender_female">#F48FB1</color> <!-- 粉紅色 -->
+
+    <!-- 狀態標示 -->
+    <color name="status_normal">#FFFFCC00</color> <!-- 黃色 -->
+    <color name="status_warning">#FFFF4444</color> <!-- 紅色 -->
+    <color name="status_unknown">#FF888888</color> <!-- 灰色 -->
+    <color name="warning_red">#FF5252</color>
+
+    <!-- BLE 專用 -->
+    <color name="bluetooth_blue">#2196F3</color> <!-- 藍牙色 -->
+
+    <color name="gray_light">#EEEEEE</color>
+    <color name="brand_primary">#6366F1</color>        <!-- 你的主色：可改成品牌黃或藍 -->
+    <color name="brand_primary_24">#396366F1</color>   <!-- 24% 透明做 ripple（#39 = 22%~24%）-->
+    <color name="reminder_bp_bg">#FFCDD2</color>    <!-- 測量血壓 -->
+    <color name="reminder_weight_bg">#E0E0E0</color><!-- 測量體重 -->
+    <color name="reminder_water_bg">#BBDEFB</color> <!-- 喝水 -->
+
+    <!-- ✅ BMI 狀態用色 -->
+    <color name="blue">#2196F3</color>    <!-- 過輕 -->
+    <color name="green">#4CAF50</color>   <!-- 正常 -->
+    <color name="orange">#FF9800</color>  <!-- 過重 -->
+    <color name="red">#F44336</color>     <!-- 肥胖 -->
+    <color name="gray_100">#F5F5F5</color> <!-- 淺灰底 -->
+
+        <color name="teal_500">#009688</color>
+        <color name="pink_300">#F48FB1</color>
+
+</resources>

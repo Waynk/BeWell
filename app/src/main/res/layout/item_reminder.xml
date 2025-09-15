@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    android:backgroundTint="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@drawable/bg_item_reminder">
+
+        <!-- 🧾 藥品資訊內容 -->
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💊 每週一 08:00 吃 高血壓藥"
+            android:textSize="16sp"
+            android:textColor="#212121"
+            android:padding="4dp"
+            android:fontFamily="sans-serif-medium" />
+
+        <!-- 🔘 按鈕區塊 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle"
+            android:dividerPadding="8dp">
+
+            <!-- 🔍 資料來源 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSource"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📄 資料來源"
+                android:textSize="14sp"
+                android:textColor="#4A90E2"
+                app:strokeColor="#4A90E2"
+                app:cornerRadius="12dp"
+                app:iconPadding="8dp"
+                android:minHeight="48dp"
+                android:minWidth="96dp"
+                android:layout_marginEnd="8dp" />
+
+            <!-- ❌ 刪除 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🗑️ 刪除"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#E53935"
+                app:cornerRadius="12dp"
+                android:minHeight="48dp"
+                android:minWidth="96dp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

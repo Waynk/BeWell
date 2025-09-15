@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 背景底色 -->
+    <item>
+        <color android:color="#FAFAFA" />
+    </item>
+
+    <!-- 向上淡入的漸層陰影 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#33000000"
+            android:endColor="#00FFFFFF"
+            android:angle="270" />
+        </shape>
+    </item>
+</layer-list>

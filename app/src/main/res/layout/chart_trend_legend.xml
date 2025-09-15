@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/legendTrend"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginBottom="16dp">
+
+    <!-- 🔼 第一行：體重上升 + 體重下降 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/legendUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— 體重上升"
+            android:textColor="#4CAF50"
+            android:textSize="16sp"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/legendDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— 體重下降"
+            android:textColor="#2196F3"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- 🔽 第二行：體重不變 + 異常增/減 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/legendStable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— 體重不變"
+            android:textColor="#616161"
+            android:textSize="16sp"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/legendAbnormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="— 異常增/減"
+            android:textColor="#F44336"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

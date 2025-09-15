@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/introOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"
+    android:alpha="0.0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvIntroMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="導覽即將開始..."
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:alpha="0.9"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnSkipIntro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳過導覽"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="60dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_red_light" />
+
+    </LinearLayout>
+</FrameLayout>

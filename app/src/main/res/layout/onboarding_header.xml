@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="12dp"
+    android:background="#FAFAFA">
+
+    <!-- 標題 -->
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_instruction"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:letterSpacing="0.02"
+        android:layout_marginBottom="4dp" />
+
+    <!-- 提示 -->
+    <TextView
+        android:id="@+id/header_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_hint"
+        android:textColor="#D32F2F"
+        android:textSize="15sp"
+        android:lineSpacingExtra="2dp" />
+</LinearLayout>

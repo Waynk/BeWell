@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="16dp"
+    card_view:cardCornerRadius="24dp"
+    card_view:cardElevation="10dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:padding="24dp">
+
+        <!-- 🏥 醫院名稱 -->
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🏥 醫院名稱"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#1A237E"
+            android:layout_marginBottom="20dp" />
+
+        <!-- 🔗 掛號網址按鈕 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tv_url"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="🔗 點我掛號"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            app:cornerRadius="12dp"
+            app:elevation="3dp"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 🗺️ 地圖導航按鈕 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tv_map"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="🗺️ 地圖導航"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#43A047"
+            app:cornerRadius="12dp"
+            app:elevation="3dp"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

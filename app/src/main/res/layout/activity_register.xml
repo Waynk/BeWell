@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            android:backgroundTint="#E3F2FD">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvRegisterTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📋 註冊頁面"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="#1565C0"
+                    android:gravity="center" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 🧾 帳號 -->
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="帳號"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="text"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD" />
+
+        <!-- 🔐 密碼 -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="密碼"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="textPassword"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"
+            android:layout_marginTop="16dp" />
+
+        <!-- 🪪 顯示名稱 -->
+        <EditText
+            android:id="@+id/etDisplayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="顯示名稱"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="textPersonName"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"
+            android:layout_marginTop="16dp" />
+
+        <!-- 🎂 年齡 -->
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="年齡"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="number"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etHeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="身高"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="number"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:hint="體重"
+            android:padding="14dp"
+            android:background="@drawable/edittext_rounded"
+            android:textSize="18sp"
+            android:inputType="number"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"
+            android:layout_marginTop="16dp" />
+
+        <!-- 🚻 性別區塊 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            android:backgroundTint="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="性別"
+                    android:textSize="18sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <RadioGroup
+                    android:id="@+id/rgGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="start">
+
+                    <RadioButton
+                        android:id="@+id/rbMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="男"
+                        android:textSize="16sp"
+                        android:textColor="#1565C0"
+                        android:buttonTint="#42A5F5"
+                        android:layout_marginEnd="32dp" />
+
+                    <RadioButton
+                        android:id="@+id/rbFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="女"
+                        android:textSize="16sp"
+                        android:textColor="#D81B60"
+                        android:buttonTint="#F48FB1" />
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ✅ 註冊按鈕 -->
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/button_primary"
+            android:textColor="#FFFFFF"
+            android:text="註冊"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:elevation="4dp" />
+
+        <!-- ✍️ 小提醒 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📝 請確認填寫資料無誤唷"
+            android:textSize="16sp"
+            android:textColor="#757575"
+            android:gravity="center"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</ScrollView>

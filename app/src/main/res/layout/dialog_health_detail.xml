@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:layout_margin="16dp">
+
+    <!-- 標題 -->
+    <TextView
+        android:id="@+id/tvDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="項目標題"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/black" />
+
+    <!-- 數值 -->
+    <TextView
+        android:id="@+id/tvDetailValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="數值：--"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/black" />
+
+    <!-- 狀態區塊：橫向排列文字與圖示 -->
+    <LinearLayout
+        android:id="@+id/layoutDetailStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvDetailStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="過輕"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/iconDetailStatus"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_bmi_thin"
+            android:contentDescription="@string/status_thin" />
+    </LinearLayout>
+
+    <!-- 建議文字 -->
+    <TextView
+        android:id="@+id/tvDetailSuggestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="建議：--"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
+
+    <!-- 關閉按鈕 -->
+    <Button
+        android:id="@+id/btnOK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我知道了"
+        android:layout_gravity="center_horizontal"
+        android:padding="12dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/blue"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
