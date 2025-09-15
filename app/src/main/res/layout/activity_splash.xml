@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?> <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash_gradient"
+    android:padding="16dp"> <!-- 🏷️ 標題卡片 -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/title_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="10dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="28dp"
+            android:gravity="center"
+            android:background="@drawable/bg_title_gradient">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BeWell"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="#1565C0"
+                android:shadowColor="#33000000"
+                android:shadowDx="1"
+                android:shadowDy="2"
+                android:shadowRadius="6"
+                android:gravity="center" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    <!-- 🐸 吉祥物圖片 -->
+    <ImageView
+        android:id="@+id/imgSplash"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ai_kero"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:contentDescription="AI 健康吉祥物"
+        app:layout_constraintTop_toBottomOf="@id/title_card"
+        app:layout_constraintBottom_toTopOf="@id/infoCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- 💬 提示卡片 -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/infoCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#FFFFFF"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="28dp">
+
+            <TextView
+            android:id="@+id/tvIntro"
+            android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="您好呀 👋 我是您的AI健康助手 Kero 🐸\n每天花一點點時間關心健康唷！\n我會一直陪著您～"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="10dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:paddingBottom="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="立即開始 🚀"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_btn_gradient"
+                app:cornerRadius="36dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="36dp"
+                android:paddingRight="36dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

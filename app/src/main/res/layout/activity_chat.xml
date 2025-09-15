@@ -1,0 +1,140 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_chat_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 🏷️ 標題卡片 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/title_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        android:backgroundTint="#E3F2FD">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="心靈陪伴室 🌸"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="#1565C0"
+                android:gravity="center"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 🗨️ 聊天內容區 -->
+    <ScrollView
+        android:id="@+id/scrollMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:background="@drawable/bg_chat_bubble"
+        android:padding="20dp"
+        android:elevation="6dp"
+        android:clipToPadding="false">
+
+        <!-- 📦 LinearLayout 包住多個 TextView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 歡迎語（只顯示一次） -->
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="跟我聊聊吧 💖 我是你的蛙蛙 Kero，呱～ 🐸"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:lineSpacingExtra="8dp"
+                android:fontFamily="sans-serif-medium"/>
+
+            <!-- 訊息區（真正放對話） -->
+            <TextView
+                android:id="@+id/tvMessages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:lineSpacingExtra="8dp"
+                android:fontFamily="sans-serif-medium"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 📝 輸入框區塊 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:padding="8dp"
+        android:background="@drawable/bg_input_container"
+        android:elevation="4dp"
+        android:layout_marginBottom="6dp"
+        android:clipToPadding="false">
+
+        <!-- 🎙️ 麥克風（放大 + 美化）-->
+        <ImageButton
+            android:id="@+id/btnMic"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:minWidth="62dp"
+            android:minHeight="62dp"
+            android:src="@drawable/mic"
+            android:contentDescription="語音輸入"
+            android:background="@drawable/bg_circle_button_small"
+            android:scaleType="centerInside"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <!-- ✍️ 輸入欄 -->
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_weight="1"
+            android:hint="要聊健康還是心情呀？🐸"
+            android:background="@drawable/bg_edittext_rounded"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:maxLines="5"
+            android:inputType="textCapSentences|textMultiLine"
+            android:gravity="start|top" />
+
+        <!-- 📤 發送 -->
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
+            android:text="發送"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:background="@drawable/btn_gradient"
+            android:layout_marginStart="8dp"
+            android:paddingHorizontal="20dp"
+            android:elevation="2dp" />
+    </LinearLayout>
+</LinearLayout>

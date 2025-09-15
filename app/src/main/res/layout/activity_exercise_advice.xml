@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <!-- ✅ Scrollable 內容 -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/frogAssistantLayout"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- 🧍‍♀️ 美化標題 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                android:backgroundTint="#E3F2FD">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/tvPageTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💪 運動建議"
+                        android:textSize="26sp"
+                        android:textColor="#1565C0"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- ✅ 卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:background="@android:color/white">
+
+                    <!-- ✅ 副標題 -->
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="請選擇您的病症："
+                        android:textSize="24sp"
+                        android:textColor="@color/colorTextDark"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- ✅ 血壓區塊 -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="血壓狀況："
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:layout_marginBottom="16dp">
+
+                        <CheckBox
+                            android:id="@+id/cbHypertension"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="高血壓"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark"
+                            android:layout_marginEnd="12dp" />
+
+                        <CheckBox
+                            android:id="@+id/cbLowBloodPressure"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="低血壓"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark" />
+                    </LinearLayout>
+
+                    <!-- ✅ 體重區塊 -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="體重狀況："
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="16dp">
+
+                        <CheckBox
+                            android:id="@+id/cbOverweight"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="體重過重"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark"
+                            android:layout_marginEnd="12dp" />
+
+                        <CheckBox
+                            android:id="@+id/cbUnderweight"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="體重過輕"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark" />
+                    </LinearLayout>
+
+                    <!-- ✅ 心率區塊 -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="心率狀況："
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="16dp">
+
+                        <CheckBox
+                            android:id="@+id/cbHighPulse"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="脈搏太高"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark"
+                            android:layout_marginEnd="12dp" />
+
+                        <CheckBox
+                            android:id="@+id/cbLowPulse"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="脈搏太低"
+                            android:textSize="16sp"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_checkbox_card"
+                            android:button="@null"
+                            android:textColor="@color/colorTextDark" />
+                    </LinearLayout>
+
+                    <!-- ✅ 建議按鈕 -->
+                    <Button
+                        android:id="@+id/btnGetExercise"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="立即取得運動建議"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorWhite"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:background="@drawable/rounded_button"
+                        android:elevation="4dp"
+                        android:paddingVertical="14dp"
+                        android:layout_marginTop="8dp" />
+
+                    <!-- ✅ 結果卡片 -->
+                    <LinearLayout
+                        android:id="@+id/llResultCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/rounded_result_card">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_info"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/tvExerciseResult"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="請選擇病症並點擊「立即取得運動建議」"
+                            android:textSize="16sp"
+                            android:textColor="@color/colorTextDark"
+                            android:textIsSelectable="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:linksClickable="true"
+                            android:textColorLink="@color/colorPrimary" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ✅ 固定在畫面底部的青蛙助理 -->
+    <LinearLayout
+        android:id="@+id/frogAssistantLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_bottom_fade"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp">
+
+        <ImageButton
+            android:id="@+id/frogButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/kero"
+            android:background="@drawable/bg_circle_shadow"
+            android:contentDescription="健康助手"
+            android:scaleType="fitCenter"
+            android:elevation="8dp" />
+
+        <TextView
+            android:id="@+id/frogHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="點擊可詢問運動建議喲~🐸"
+            android:textSize="15sp"
+            android:textColor="@color/gray"
+            android:textStyle="bold"
+            android:paddingTop="6dp"
+            android:paddingBottom="4dp" />
+    </LinearLayout>
+
+</RelativeLayout>

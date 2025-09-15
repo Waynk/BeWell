@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="16dp"
+    android:backgroundTint="#FFFFFF"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- 🕑 時間選擇 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="⏰ 選擇時間"
+            android:textColor="#37474F"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:labelFor="@id/timePicker" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#FAFAFA">
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner"
+                android:importantForAccessibility="yes"
+                android:theme="@style/ThemeOverlay.MaterialComponents.TimePicker"
+                android:padding="8dp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- 📂 提醒類別 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📂 選擇提醒類別"
+            android:textSize="18sp"
+            android:textColor="#37474F"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            android:labelFor="@id/spinnerCategory" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="請選擇提醒類別"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 💊 藥品種類（預設隱藏） -->
+        <TextView
+            android:id="@+id/labelMedication"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💊 選擇藥品種類"
+            android:textSize="18sp"
+            android:textColor="#37474F"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            android:labelFor="@id/spinnerMedication"
+            android:visibility="gone" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spinnerMedication"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="請選擇藥品"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 📅 星期選擇 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📅 每週星期幾提醒"
+            android:textSize="16sp"
+            android:textColor="#37474F"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            android:labelFor="@id/spinnerDayOfWeek" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spinnerDayOfWeek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="請選擇星期幾"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

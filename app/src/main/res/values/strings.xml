@@ -1,0 +1,195 @@
+<resources>
+    <string name="app_name">BeWell</string>
+
+
+    <!--  標題  -->
+    <string name="title_select_condition">請選擇您的病症：</string>
+    <!--  分段標題  -->
+    <string name="blood_pressure_title">血壓狀況</string>
+    <string name="weight_title">體重狀況</string>
+    <!--  病症  -->
+    <string name="high_blood_pressure">高血壓</string>
+    <string name="low_blood_pressure">低血壓</string>
+    <string name="overweight">體重過重</string>
+    <string name="underweight">體重過輕</string>
+    <string name="high_pulse">脈搏太高</string>
+    <string name="low_pulse">脈搏太低</string>
+    <!--  按鈕與預設文字  -->
+    <string name="get_exercise_advice">取得運動建議</string>
+    <string name="exercise_result_default">請選擇病症並點擊「取得運動建議」</string>
+
+    <!-- 🧠 GPT 分析建議區塊 -->
+    <string name="gpt_suggestion_placeholder">🤖 正在取得 AI 分析建議中…</string>
+    <string name="suggestion_failed">⚠️ 無法取得建議，請稍後再試</string>
+    <string name="retry_suggestion">🔄 重新取得建議</string>
+    <string name="ai_tag">🧠 AI 分析建議：</string>
+    <string name="query_period">查詢期間：%1$s ~ %2$s</string>
+    <string name="loading_gpt">🤖 正在分析資料中…</string>
+    <string name="gpt_explanation">💡 AI 根據最近資料，分析體重與 BMI 提供建議，如有持續異常請洽專業醫師。</string>
+    <string name="gpt_conclusion_hint">💡 AI 根據最近資料分析，若異常建議洽詢專業醫師</string>
+
+    <!-- 📅 日期與查詢 -->
+    <string name="select_date">📅 選擇特定日期</string>
+    <string name="period_label">查詢期間 / 週期：</string>
+    <string name="sample_date_range">2025/08/24 ~ 2025/08/30</string>
+    <string name="scroll_to_top">回到頂部</string>
+    <string name="btn_prev">←</string>
+    <string name="btn_next">→</string>
+    <string name="week">週</string>
+    <string name="month">月</string>
+    <string name="year">年</string>
+    <string name="empty_text">這週尚未紀錄喔～</string>
+    <string name="empty_text_friendly">📭 這段時間內沒有紀錄喔～</string>
+    <string name="empty_subtitle">快去量一次體重吧！💪</string>
+
+    <!-- 🧾 語音朗讀格式 -->
+    <string name="tts_card_read_format">%1$s，時間：%2$s，體重：%3$.1f 公斤，BMI：%4$.1f，狀態：%5$s</string>
+
+    <!-- 🧪 分析解說 -->
+    <string name="ai_explanation">💡 AI 根據最近資料，綜合體重與 BMI 給出建議供您參考，若有持續異常請洽醫師。</string>
+
+    <!-- 🔁 卡片動畫 -->
+    <string name="layout_anim_fall_down">卡片進場動畫</string>
+
+    <!-- 📌 健康卡片內容 -->
+    <string name="dialog_title">📌 詳細健康建議</string>
+    <string name="dialog_title_sample">BMI 詳細分析</string>
+    <string name="dialog_value">22.3</string>
+    <string name="dialog_status">正常</string>
+    <string name="dialog_description">建議您每日均衡飲食，適度運動以維持目前良好體重狀態。</string>
+    <string name="dialog_value_sample">數值：23.1</string>
+    <string name="dialog_status_sample">狀態：正常</string>
+
+    <!-- 🧑‍⚕️ 健康相關 -->
+    <string name="label_weight">%.1f 公斤</string>
+    <string name="label_user_info">使用者：%1$s｜性別：%2$s｜年齡：%3$d｜身高：%4$.1fcm</string>
+    <string name="username_label">使用者：</string>
+    <string name="history_title">體重歷史紀錄</string>
+
+    <!-- 🛠️ 設定與操作 -->
+    <string name="settings_title">⚙️ 設定</string>
+    <string name="reset_guide">🔁 重新體驗導覽</string>
+    <string name="enable_tts">啟用語音提示（TTS）</string>
+    <string name="open_debug">🛠️ 開啟 DEBUG 畫面</string>
+    <string name="back_to_main">🏠 返回主畫面</string>
+
+    <!-- 🆕 查詢範圍下拉選單（Spinner） -->
+    <string name="filter_all">📊 全部</string>
+    <string name="filter_week">📅 本週</string>
+    <string name="filter_month">📅 本月</string>
+    <string name="filter_year">📅 本年</string>
+    <string name="filter_custom">📅 自訂區間</string>
+
+    <!-- 🆕 狀態 emoji 標籤 -->
+    <string name="status_normal">✅ 正常</string>
+    <string name="status_overweight">🟠 過重</string>
+    <string name="status_obese">❌ 肥胖</string>
+    <string name="status_underweight">🔵 過輕</string>
+
+    <!-- 🆕 TTS 功能開關 -->
+    <string name="switch_tts_label">🔊 開啟語音播報</string>
+    <string name="switch_tts_hint">切換此功能以啟用或關閉語音說明</string>
+
+    <!-- 🆕 Tooltip for FAB -->
+    <string name="tooltip_back_to_top">⬆️ 回到最上面</string>
+
+    <!-- 📌 表單與欄位 -->
+    <string name="label_select_gender">請選擇您的性別</string>
+    <string name="label_gender">請選擇您的性別 *</string>
+    <string name="label_height">請輸入您的身高（cm） *</string>
+    <string name="label_input_height">請輸入您的身高</string>
+    <string name="label_age">請輸入您的年齡 *</string>
+    <string name="label_input_age">請輸入您的年齡</string>
+    <string name="hint_height">輸入身高（如：180）</string>
+    <string name="hint_age">輸入年齡（如：20）</string>
+    <string name="gender_male">👨 男性</string>
+    <string name="gender_female">👩 女性</string>
+    <string name="desc_mic_height">語音輸入身高</string>
+    <string name="desc_mic_age">語音輸入年齡</string>
+
+    <!-- 📌 按鈕與流程 -->
+    <string name="btn_finish">✅ 完成並開始體重分析</string>
+    <string name="btn_start_analysis">✅ 開始體重分析</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_chart">📈 圖表</string>
+    <string name="btn_history">📂 歷史</string>
+    <string name="btn_week">週</string>
+    <string name="btn_month">月</string>
+    <string name="btn_year">年</string>
+
+    <!-- 🔊 語音與錯誤 -->
+    <string name="error_gender_required">請選擇性別！</string>
+    <string name="error_height_required">請輸入或選擇身高</string>
+    <string name="error_age_required">請輸入或選擇年齡</string>
+    <string name="msg_upload_success">✅ 上傳成功</string>
+    <string name="msg_upload_fail">❌ 上傳失敗：%1$s</string>
+    <string name="msg_upload_error">❌ 上傳錯誤：%1$s</string>
+    <string name="msg_measuring_done">測量完成</string>
+
+    <!-- 📌 BLE 狀態 -->
+    <string name="msg_connecting">找到體重計，連線中…</string>
+    <string name="msg_connected">已連線，準備讀取資料…</string>
+    <string name="msg_disconnected">連線中斷，重試掃描…</string>
+    <string name="msg_scan">掃描中…</string>
+    <string name="msg_data_receiving">資料接收中…</string>
+    <string name="msg_no_ble_permission">沒有掃描權限</string>
+    <string name="permission_denied_msg">未授權藍牙或定位權限，無法使用</string>
+
+    <!-- 🧮 格式 -->
+    <string name="format_value">數值：%1$s</string>
+    <string name="format_status">狀態：%1$s</string>
+    <string name="format_suggestion">建議：%1$s</string>
+
+    <!-- 🧹 空字串 -->
+    <string name="empty"></string>
+
+    <!-- 🆕 補上缺漏字串 -->
+    <string name="hint_input_height">輸入您的身高（如：180）</string>
+    <string name="hint_input_age">輸入您的年齡（如：20）</string>
+    <string name="explain_why">您所填寫的資料僅用於健康分析，並不會對外外流</string>
+    <string name="step_age">步驟 2：年齡</string>
+    <string name="step_height">步驟 1：身高</string>
+
+    <!-- 🧩 補上缺漏錯誤關鍵字 -->
+    <string name="title_weight_setup">請填寫您的基本資料</string>
+    <string name="reminder_fill_truthfully">請務必填寫真實身高、性別與年齡資料，以利於分析</string>
+    <string name="disclaimer">本App所提供資訊僅供健康分析，實際健康狀況請諮詢專業醫師</string>
+    <string name="header_instruction">請選擇您的性別</string>
+    <string name="header_hint">選擇後將自動推薦健康體重區間</string>
+    <string name="selected_date_sample">查詢期間：2025/08/24 ~ 2025/08/30</string>
+    <string name="empty_image_desc">查無資料圖示</string>
+
+    <!-- 圖表畫面文字 -->
+    <string name="chart_title">📊 體重圖表統計</string>
+    <string name="btn_apply_custom_range">查詢區間資料</string>
+    <string name="btn_line_chart">折線圖</string>
+    <string name="btn_pie_chart">圓餅圖</string>
+    <string name="btn_back">🏠 返回主畫面</string>
+    <string name="start_date_default">開始日期：--/--/--</string>
+    <string name="end_date_default">結束日期：--/--/--</string>
+    <string name="chart_legend">🟢 正常    🟠 偏高 / 偏低    🔴 過輕 / 過重</string>
+    <string name="pie_stats_default">統計：過輕 0 次、偏低 0 次、正常 0 次、偏高 0 次、過重 0 次</string>
+    <string name="date_start">開始日期</string>
+    <string name="date_end">結束日期</string>
+    <string name="apply_range">套用區間</string>
+    <string name="line_chart">折線圖</string>
+    <string name="pie_chart">圓餅圖</string>
+    <string name="label_underweight">🔵 過輕</string>
+    <string name="label_normal">🟩 正常</string>
+    <string name="label_high">🟨 偏高</string>
+    <string name="label_overweight">🟥 過重</string>
+    <string name="axis_label">X軸：時間　Y軸：體重（kg）</string>
+    <string name="pie_stats_placeholder">分類統計顯示區</string>
+    <string name="tts_label">語音播報</string>
+    <string name="marker_date">📅 日期：%1$s</string>
+    <string name="marker_weight">⚖️ 體重：%1$.1f 公斤</string>
+    <string name="marker_status">📊 狀態：%1$s</string>
+
+    <!-- 📌 MarkerView 顯示狀態補字串 -->
+    <string name="status_low">偏低 🟠</string>
+    <string name="status_high">偏高 🟠</string>
+    <string name="chart_stats_format">%1$s：%2$d 次（%3$.1f%%）</string>
+    <string name="status_thin">過輕</string>
+    <string name="status_warning">偏高</string>
+    <string name="status_danger">過重</string>
+</resources>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <!-- 📊 標題 -->
+        <TextView
+            android:id="@+id/tvChartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📊 圖表統計"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 📆 區間選擇 -->
+        <Spinner
+            android:id="@+id/spinnerDateRange"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 📅 自訂日期 -->
+        <LinearLayout
+            android:id="@+id/layoutCustomRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvStartDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="開始日期"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:background="#E3F2FD"
+                android:textColor="#1565C0"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvEndDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="結束日期"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:background="#E3F2FD"
+                android:textColor="#1565C0"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApplyCustomRange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="套用日期"
+                app:cornerRadius="16dp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1565C0" />
+        </LinearLayout>
+
+        <!-- 📊 圖表切換 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLineChart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:text="折線圖"
+                android:layout_marginEnd="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPieChart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:text="圓餅圖" />
+        </LinearLayout>
+
+        <!-- 🔊 語音提示開關 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="語音提示"
+                android:textSize="16sp"
+                android:textColor="#333333" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchTts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:checked="true" />
+        </LinearLayout>
+
+        <!-- 🧲 折線圖 -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:visibility="visible"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 📏 軸標籤 -->
+        <TextView
+            android:id="@+id/tvAxisUnitLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X 軸：時間（月／日）  Y 軸：體重（kg）"
+            android:textSize="12sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible" />
+
+        <!-- 🥧 圓餅圖 -->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="420dp"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 📊 圓餅圖統計說明 -->
+        <TextView
+            android:id="@+id/tvPieStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="統計數據載入中..."
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone" />
+
+        <!-- ✅ 狀態圖例 -->
+        <include
+            android:id="@+id/legendStatus"
+            layout="@layout/chart_dot_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible" />
+
+        <!-- 📈 趨勢圖例 -->
+        <include
+            android:id="@+id/legendTrend"
+            layout="@layout/chart_trend_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:visibility="visible" />
+
+        <!-- ⬅️ 返回 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="返回主畫面"
+            app:cornerRadius="24dp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1976D2"
+            android:icon="@drawable/ic_arrow_back"
+            android:gravity="center" />
+    </LinearLayout>
+</ScrollView>

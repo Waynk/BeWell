@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStartDate"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="📅 選擇開始日期"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1976D2"
+        app:cornerRadius="12dp"
+        android:elevation="4dp"
+        android:textSize="18sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEndDate"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="📅 選擇結束日期"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#388E3C"
+        app:cornerRadius="12dp"
+        android:elevation="4dp"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp" />
+
+</LinearLayout>

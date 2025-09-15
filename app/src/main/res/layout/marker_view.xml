@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:backgroundTint="@android:color/white"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:strokeColor="#B0BEC5"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp"
+        android:minWidth="180dp">
+
+        <!-- 📅 日期 -->
+        <TextView
+            android:id="@+id/tvMarkerDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📅 日期：2025/08/28"
+            android:textColor="#263238"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <!-- 🕒 時間 -->
+        <TextView
+            android:id="@+id/tvMarkerTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🕒 時間：21:35:12"
+            android:textColor="#263238"
+            android:textSize="14sp"
+            android:layout_marginBottom="6dp" />
+
+        <!-- ⚖️ 體重 -->
+        <TextView
+            android:id="@+id/tvMarkerWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚖️ 體重：70.2 kg"
+            android:textColor="#263238"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- 🟢 狀態（圖示 + 文字） -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iconMarkerStatus"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/ic_bmi_normal"
+                android:contentDescription="@string/status_normal" />
+
+            <TextView
+                android:id="@+id/tvMarkerStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正常"
+                android:textColor="#263238"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

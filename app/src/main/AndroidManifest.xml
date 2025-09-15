@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.jenmix">
+
+    <!-- 權限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.JenmixTime"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31"
+
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+    >
+
+
+
+        <!-- 啟動畫面（Launcher） -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <!-- 啟動 App 預設進入點 -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" />
+
+        <!-- 注册页 -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <!-- 你的五个功能入口都要注册 -->
+        <activity
+            android:name=".MainMenuActivity"
+            android:exported="true"
+            android:label="主選單" />
+
+        <activity
+            android:name=".jen2.MainActivity2"
+            android:exported="true"
+            android:label="血壓管理" />
+
+        <activity
+            android:name=".jen3.MainActivity3"
+            android:exported="true"
+            android:label="影片教學" />
+
+        <activity
+            android:name=".jen4.MainActivity4"
+            android:exported="true"
+            android:label="提醒通知" />
+
+        <activity
+            android:name=".jen5.MainActivity5"
+            android:exported="true"
+            android:label="醫院挂號" />
+
+        <!-- ✅ 健康分析 -->
+        <activity
+            android:name=".jen1.MainActivity1"
+            android:exported="false"
+            android:label="健康分析"
+            android:theme="@style/Theme.JenmixTime" />
+
+        <activity android:name=".jen1.WebViewActivity" />
+        <activity android:name=".jen1.ChartActivity" />
+
+        <!-- ✅ 運動建議 -->
+        <activity
+            android:name=".jen6.MainActivity6"
+            android:exported="false"
+            android:label="運動建議" />
+
+        <activity
+            android:name=".jen7.MainActivity7"
+            android:exported="false"
+            android:label="求助通知" />
+
+        <activity
+            android:name=".jen8.MainActivity8"
+            android:label="體重通知" />
+
+        <activity android:name=".jen8.ChartActivity" />
+
+        <!-- ✅ 首次輸入畫面 -->
+        <activity
+            android:name=".jen8.FirstTimeSetupActivity"
+            android:exported="false" />
+
+        <!-- ✅ 歷史紀錄查詢畫面 -->
+        <activity
+            android:name=".jen8.HistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".jen9.MainActivity9"
+            android:exported="false" />
+
+        <receiver android:name=".jen9.ReminderReceiver" />
+
+        <activity android:name=".ChatActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".jen2.WebViewActivity" />
+        <receiver android:name=".jen2.ReminderReceiver" />
+
+
+
+
+        <!-- 🌐 影片網頁顯示用 WebView -->
+        <activity android:name=".jen3.WebViewActivity" />
+        <activity android:name=".jen3.YouTubeActivity" />
+
+
+
+        <activity
+            android:name=".hu.FourthActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".hu.ThirdActivity"
+            android:exported="true">
+            <!-- 支援單檔案分享 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/csv" />
+                <data android:mimeType="application/csv" />
+                <data android:mimeType="application/vnd.ms-excel" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <!-- 支援多檔案分享 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/csv" />
+                <data android:mimeType="application/csv" />
+                <data android:mimeType="application/vnd.ms-excel" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".hu.SecondActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".hu.ReportService"
+            android:exported="false" />
+
+        <activity android:name=".jen8.SettingsActivity" />
+        <activity android:name=".profile.ProfileManagerActivity" />
+
+
+    </application>
+</manifest>

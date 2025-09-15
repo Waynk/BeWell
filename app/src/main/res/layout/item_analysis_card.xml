@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="10dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <!-- ✅ 分類標籤 -->
+        <TextView
+            android:id="@+id/tvCardCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BMI"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_card_chip_round"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:layout_marginBottom="12dp"
+            android:textStyle="bold"
+            android:elevation="2dp" />
+
+        <!-- ✅ 數值 -->
+        <TextView
+            android:id="@+id/tvCardValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="22.3"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="1"
+            android:layout_marginBottom="8dp" />
+
+        <!-- ✅ 狀態區：文字 + 圖片 -->
+        <LinearLayout
+            android:id="@+id/llCardStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:id="@+id/tvCardStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正常"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:textColor="#4CAF50"
+                android:layout_marginEnd="8dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <ImageView
+                android:id="@+id/ivCardStatusIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bmi_unknown"
+                android:contentDescription="狀態圖示"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+        <!-- 🕓 測量時間 -->
+        <TextView
+            android:id="@+id/tvCardTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🕓 測量時間：03:00"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- 👁️ 顯示更多 -->
+        <TextView
+            android:id="@+id/tvCardToggleMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="顯示更多"
+            android:textSize="12sp"
+            android:textColor="@color/blue"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:visibility="visible" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

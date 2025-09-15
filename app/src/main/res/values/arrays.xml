@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 📏 身高單位 -->
+    <string-array name="height_units">
+        <item>cm</item>
+        <item>inch</item>
+    </string-array>
+
+    <!-- 📆 歷史紀錄查詢區間選項 -->
+    <string-array name="query_options">
+        <item>📊 全部</item>
+        <item>📅 本週</item>
+        <item>📅 本月</item>
+        <item>📅 本年</item>
+        <item>📆 自訂區間</item>
+    </string-array>
+</resources>
