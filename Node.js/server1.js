@@ -2059,33 +2059,40 @@ app.get("/user/update-profile", async (req, res) => {
 });
 
 // 3) 更改密碼（需帶目前密碼與新密碼）
-//    ⚠️ 密碼放在 URL 風險高，請務必注意環境日誌與快取
-//    GET /user/change-password?username=<帳號>&current_password=<舊密碼>&new_password=<新密碼>
+//    密碼放在 URL 風險高 注意環境日誌與快取
+
+// ✅ 修改密碼 API（GET /user/change-password?username=...）
 app.get("/user/change-password", async (req, res) => {
   const { username, current_password, new_password } = req.query;
 
+  // 1. 檢查參數
   if (!username || !current_password || !new_password) {
     return res
       .status(400)
       .json({ error: "缺少必要欄位 username/current_password/new_password" });
   }
-  if (String(new_password).length < 8) {
-    return res.status(400).json({ error: "新密碼至少 8 碼" });
+
+  if (String(new_password).length < 4) {
+    return res.status(400).json({ error: "新密碼至少 4 碼" });
   }
 
   try {
+    // 2. 查詢使用者密碼
     const [rows] = await db.execute(
       "SELECT password FROM Users WHERE username = ?",
       [username]
     );
+
     if (!rows.length) return res.status(404).json({ error: "找不到使用者" });
 
-    const currentHashed = hashPw(current_password);
+    // 3. 驗證舊密碼
+    const currentHashed = hashPw(current_password); // 加密比對用
     if (rows[0].password !== currentHashed) {
       return res.status(401).json({ error: "目前密碼錯誤" });
     }
 
-    const newHashed = hashPw(new_password);
+    // 4. 加密新密碼並更新
+    const newHashed = hashPw(new_password); // 對新密碼加密
     await db.execute("UPDATE Users SET password = ? WHERE username = ?", [
       newHashed,
       username,
@@ -2093,7 +2100,7 @@ app.get("/user/change-password", async (req, res) => {
 
     res.json({ message: "✅ 密碼已更新" });
   } catch (err) {
-    console.error("❌ 密碼更新失敗:", err.message);
+    console.error(" 密碼更新失敗:", err.message);
     res.status(500).json({ error: "伺服器錯誤" });
   }
 });

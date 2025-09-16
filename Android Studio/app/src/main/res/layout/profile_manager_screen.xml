@@ -1,189 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp"
-    android:background="#F0F4FF">
-
-    <!-- 👤 標題卡片 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/profile_title_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="20dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="10dp"
-        android:backgroundTint="#E3F2FD"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:id="@+id/profile_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="👤 個人資料管理"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="#1565C0"
-                android:fontFamily="sans-serif-medium"
-                android:shadowColor="#B2DFDB"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="2" />
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp" android:background="#F0F4FF">
+    <!--  👤 標題卡片  -->
+    <androidx.cardview.widget.CardView android:id="@+id/profile_title_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:layout_marginBottom="24dp" app:cardCornerRadius="24dp" app:cardElevation="10dp" android:backgroundTint="#E3F2FD" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="20dp">
+            <TextView android:id="@+id/profile_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 個人資料管理" android:textSize="24sp" android:textStyle="bold" android:textColor="#0D47A1" android:fontFamily="sans-serif-medium" android:letterSpacing="0.02" android:shadowColor="#B2DFDB" android:shadowDx="1" android:shadowDy="1" android:shadowRadius="2"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <!-- 🧾 使用者資料卡片 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/user_info_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/profile_title_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/tvUserInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="載入中..."
-                android:textSize="16sp"
-                android:textColor="#444444"
-                android:background="#EEEEEE"
-                android:padding="12dp"
-                android:lineSpacingExtra="4dp" />
-
+    <!--  🧾 使用者資料卡片  -->
+    <androidx.cardview.widget.CardView android:id="@+id/user_info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:layout_marginBottom="20dp" app:cardCornerRadius="20dp" app:cardElevation="6dp" app:cardBackgroundColor="#FFFFFF" app:layout_constraintTop_toBottomOf="@id/profile_title_card" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        <TextView android:id="@+id/tvUserInfo" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="載入中..." android:textSize="16sp" android:textColor="#333333" android:padding="16dp" android:background="#F5F5F5" android:lineSpacingExtra="4dp"/>
+    </androidx.cardview.widget.CardView>
+    <!--  ✏️ 修改資料卡片  -->
+    <androidx.cardview.widget.CardView android:id="@+id/edit_info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_marginBottom="20dp" app:cardCornerRadius="20dp" app:cardElevation="6dp" app:cardBackgroundColor="#FFFFFF" app:layout_constraintTop_toBottomOf="@id/user_info_card" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:dividerPadding="8dp">
+            <!--  性別  -->
+            <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="性別（男 / 女）">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etGender" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapWords"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--  年齡  -->
+            <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="年齡" android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etAge" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--  身高  -->
+            <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="身高 (cm)" android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etHeight" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--  更新按鈕  -->
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnUpdateInfo" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="24dp" android:text="✅ 更新個人資料" android:textColor="@android:color/white" android:textSize="16sp" app:cornerRadius="24dp" app:backgroundTint="#4CAF50"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <!-- ✏️ 修改資料卡片 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/edit_info_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/user_info_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <EditText
-                android:id="@+id/etGender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="性別（男 / 女）" />
-
-            <EditText
-                android:id="@+id/etAge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="年齡"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:id="@+id/etHeight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="身高 (cm)"
-                android:inputType="numberDecimal"
-                android:layout_marginTop="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUpdateInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="✅ 更新個人資料"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="16dp"
-                app:cornerRadius="16dp"
-                app:backgroundTint="#4CAF50" />
+    <!--  🔐 密碼卡片  -->
+    <androidx.cardview.widget.CardView android:id="@+id/password_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_marginBottom="20dp" app:cardCornerRadius="20dp" app:cardElevation="6dp" app:cardBackgroundColor="#FFFFFF" app:layout_constraintTop_toBottomOf="@id/edit_info_card" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔐 更改密碼" android:textSize="18sp" android:textStyle="bold" android:textColor="#1A237E" android:layout_marginBottom="16dp"/>
+            <!--  舊密碼  -->
+            <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="目前密碼">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etOldPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--  新密碼  -->
+            <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="新密碼" android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etNewPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--  變更按鈕  -->
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnChangePassword" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="24dp" android:text="🔁 變更密碼" android:textColor="@android:color/white" android:textSize="16sp" app:cornerRadius="24dp" app:backgroundTint="#1565C0"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <!-- 🔐 密碼卡片 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/password_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="20dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/edit_info_card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔐 更改密碼"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#222222"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/etOldPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="目前密碼"
-                android:inputType="textPassword" />
-
-            <EditText
-                android:id="@+id/etNewPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="新密碼"
-                android:inputType="textPassword"
-                android:layout_marginTop="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnChangePassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🔁 變更密碼"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="16dp"
-                app:cornerRadius="16dp"
-                app:backgroundTint="#1565C0" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
