@@ -61,10 +61,10 @@ class FirstTimeSetupActivity : AppCompatActivity() {
             btnMale.setBackgroundColor(ContextCompat.getColor(this, R.color.gray_light))
         }
 
-        val heights = (100..250).map { it.toString() }
+        val heights = (50..250).map { it.toString() }
         etHeight.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, heights))
 
-        val ages = (10..100).map { it.toString() }
+        val ages = (1..150).map { it.toString() }
         etAge.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, ages))
 
         etHeight.setOnClickListener { etHeight.showDropDown() }
@@ -100,13 +100,11 @@ class FirstTimeSetupActivity : AppCompatActivity() {
         val heightStr = etHeight.text.toString().trim()
         val ageStr = etAge.text.toString().trim()
 
-        // ✅ 檢查性別
         if (selectedGender.isEmpty()) {
             Toast.makeText(this, "⚠️ 請選擇您的性別", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // ✅ 檢查身高
         if (heightStr.isEmpty()) {
             Toast.makeText(this, "⚠️ 請輸入您的身高", Toast.LENGTH_SHORT).show()
             return
@@ -119,7 +117,12 @@ class FirstTimeSetupActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ 檢查年齡
+        // ✅ 限制身高範圍
+        if (heightCm <= 50 || heightCm > 250) {
+            Toast.makeText(this, "⚠️ 身高必須介於 50~ 250 cm", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (ageStr.isEmpty()) {
             Toast.makeText(this, "⚠️ 請輸入您的年齡", Toast.LENGTH_SHORT).show()
             return
@@ -132,7 +135,13 @@ class FirstTimeSetupActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ 通過所有驗證，顯示確認 Dialog
+        // ✅ 限制年齡範圍
+        if (age <= 0 || age > 150) {
+            Toast.makeText(this, "⚠️ 年齡必須介於 1 ~ 150 歲", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 全部檢查通過
         showConfirmDialog(selectedGender, heightCm, age)
     }
 

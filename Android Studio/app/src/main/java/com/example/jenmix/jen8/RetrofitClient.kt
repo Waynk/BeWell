@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object  RetrofitClient {
 
     // ✅ 改成你自己的後端 API 網址（測試或正式環境）
-    private const val BASE_URL = "http://172.20.10.4:10000"
+    private const val BASE_URL = "https://test-9wne.onrender.com"
 
     // ✅ 建立 Retrofit 實例，支援日期格式
     val retrofit: Retrofit by lazy {
