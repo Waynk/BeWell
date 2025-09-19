@@ -2317,10 +2317,10 @@ class SecondActivity : AppCompatActivity() {
 
 
     private fun updateAxisLabelsForLineChart() {
-        yAxisLabel.text = "(百分比)"
+        yAxisLabel.text = "(%)"
         (yAxisLabel.layoutParams as FrameLayout.LayoutParams).apply {
-            topMargin = 55
-            leftMargin = 20
+            topMargin = 100
+            leftMargin = 80
         }
         yAxisLabel.requestLayout()
 

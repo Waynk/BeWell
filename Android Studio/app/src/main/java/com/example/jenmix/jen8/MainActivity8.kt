@@ -510,10 +510,15 @@ class MainActivity8 : AppCompatActivity() {
                     val dateFormat = android.text.format.DateFormat.format("yyyy/MM/dd HH:mm", now)
                     findViewById<TextView>(R.id.tvMeasuredTime)?.text = "🕒 測量時間：$dateFormat"
 
-                    // ✅ 提示體重或阻抗為 0（姿勢錯誤）
-                    if (parsed.weight <= 0f || parsed.impedance == 0) {
-                        Toast.makeText(this@MainActivity8, "⚠️ 姿勢錯誤請雙腳站穩測量", Toast.LENGTH_SHORT).show()
+                    if (parsed.weight <= 0f) {
+                        Toast.makeText(this@MainActivity8, "⚠️ 體重為 0，請重新測量", Toast.LENGTH_SHORT).show()
                         return@runOnUiThread
+                    }
+
+                    if (parsed.impedance == 0) {
+                        Log.w("BLE", "⚠️ 阻抗為 0，無法顯示體脂分析，但不阻止體重顯示")
+                        // ✅ 可以顯示體重，但不顯示健康卡片
+                        Toast.makeText(this@MainActivity8, "⚠️ 阻抗為 0，部分健康分析可能不準確", Toast.LENGTH_SHORT).show()
                     }
 
                     if (!hasUploaded) {
