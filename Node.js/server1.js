@@ -859,17 +859,18 @@ app.get("/get_combined_records", async (req, res) => {
       FROM BloodPressure bp
       JOIN Users u 
         ON u.user_id = bp.user_id
-      LEFT JOIN weight_records wr 
-        ON wr.user_id = u.user_id
-        AND wr.measured_at = (
-          SELECT wr2.measured_at
-          FROM weight_records wr2
-          WHERE wr2.user_id = u.user_id
-            AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) 
-                = DATE(CONVERT_TZ(wr2.measured_at, '+00:00', '+08:00'))
-          ORDER BY ABS(TIMESTAMPDIFF(SECOND, wr2.measured_at, bp.measure_at))
-          LIMIT 1
-        )
+      LEFT JOIN weight_records wr
+  ON wr.user_id = u.user_id
+  AND wr.id = (
+    SELECT wr2.id
+    FROM weight_records wr2
+    WHERE wr2.user_id = u.user_id
+      AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) 
+          = DATE(CONVERT_TZ(wr2.measured_at, '+00:00', '+08:00'))
+    ORDER BY ABS(TIMESTAMPDIFF(SECOND, wr2.measured_at, bp.measure_at))
+    LIMIT 1
+  )
+
       WHERE u.username = ?
       ORDER BY bp.measure_at ASC
       `,
