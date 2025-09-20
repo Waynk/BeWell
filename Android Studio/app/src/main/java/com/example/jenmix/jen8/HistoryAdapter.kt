@@ -28,7 +28,6 @@ class HistoryAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val colorBar: View = view.findViewById(R.id.viewColorBar)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
-        val tvTime: TextView = view.findViewById(R.id.tvTime)
         val tvWeight: TextView = view.findViewById(R.id.tvWeight)
         val tvBmi: TextView = view.findViewById(R.id.tvBmi)
         val tvStatus: TextView = view.findViewById(R.id.tvStatus)
@@ -56,9 +55,7 @@ class HistoryAdapter(
         }
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         holder.tvDate.text = date?.let { dateFormat.format(it) } ?: "日期錯誤"
-        holder.tvTime.text = date?.let { "時間：${timeFormat.format(it)}" } ?: "時間錯誤"
         holder.tvWeight.text = "體重：%.1f 公斤".format(record.weight)
 
         val bmiValue = record.bmi?.takeIf { it > 0f } ?: (record.weight / heightM.pow(2))
@@ -75,8 +72,6 @@ class HistoryAdapter(
         holder.tvStatus.text = "狀態：${statusInfo.statusText}"
         holder.tvStatus.setTextColor(ContextCompat.getColor(context, statusInfo.colorRes))
         holder.iconStatus.setImageResource(statusInfo.iconRes)
-        holder.tvStatus.setTextColor(ContextCompat.getColor(context, statusInfo.colorRes))
-        holder.iconStatus.setImageResource(statusInfo.iconRes)
         holder.colorBar.setBackgroundColor(ContextCompat.getColor(context, statusInfo.colorRes))
 
         holder.itemView.setOnClickListener {
@@ -91,7 +86,7 @@ class HistoryAdapter(
             dialog.show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager, "health_detail_dialog")
 
             if (ttsEnabled) {
-                val speakText = "${holder.tvDate.text}，${holder.tvTime.text}，體重 ${record.weight} 公斤，BMI ${"%.1f".format(bmiValue)}，${statusInfo.statusText}"
+                val speakText = "${holder.tvDate.text}，體重 ${record.weight} 公斤，BMI ${"%.1f".format(bmiValue)}，${statusInfo.statusText}"
                 tts?.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, null)
             } else {
                 tts?.stop()

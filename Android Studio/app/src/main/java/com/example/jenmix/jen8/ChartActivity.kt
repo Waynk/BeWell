@@ -13,11 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.jenmix.databinding.ActivityChartBinding
 import com.example.jenmix.jen8.model.WeightRecordLocal
-import com.example.jenmix.jen8.WeightLineChartHelper
-import com.example.jenmix.jen8.WeightPieChartHelper
-import com.example.jenmix.jen8.WeightUtils
-import com.example.jenmix.jen8.HistoryApi
-import com.example.jenmix.jen8.RetrofitClient
+import com.example.jenmix.jen8.*
 import com.example.jenmix.storage.UserPrefs
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
@@ -175,14 +171,29 @@ class ChartActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     if (response.isSuccessful) {
                         val records = response.body() ?: emptyList()
                         val converted = records.map {
+                            val parsedDate = try {
+                                val utcFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                                utcFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+                                val localFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                                localFormat.timeZone = TimeZone.getTimeZone("Asia/Taipei")
+
+                                val utcDate = utcFormat.parse(it.measuredAt)
+                                val localDateStr = localFormat.format(utcDate!!)
+                                localFormat.parse(localDateStr) ?: Date()
+                            } catch (e: Exception) {
+                                Date()
+                            }
+
                             WeightRecordLocal(
-                                date = sdfInput.parse(it.measuredAt) ?: Date(),
+                                date = parsedDate,
                                 weight = it.weight,
                                 height = it.height,
                                 gender = it.gender,
                                 age = it.age
                             )
                         }
+
                         allRecords = converted
                         applyDateFilter(null, null)
                     } else {
@@ -211,8 +222,6 @@ class ChartActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val statsMap = WeightPieChartHelper.setupPieChart(binding.pieChart, filtered)
         val df = DecimalFormat("#.##")
-        val total = statsMap.values.sumOf { it.first }
-
         val statsText = statsMap.entries.joinToString("\n") { (category, pair) ->
             val (count, percent) = pair
             "$category：$count 次（${df.format(percent)}%）"
@@ -233,9 +242,11 @@ class ChartActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val record = e?.data as? WeightRecordLocal ?: return
                 val status = WeightUtils.getWeightStatus(record.weight, record.height)
-                val dateText = SimpleDateFormat("yyyy 年 M 月 d 日", Locale.TAIWAN).format(record.date)
-                val timeText = SimpleDateFormat("HH 點 mm 分 ss 秒", Locale.TAIWAN).format(record.date)
-                val speakText = "$dateText，時間 $timeText，體重 ${record.weight} 公斤，屬於 $status"
+
+                // ✅ 年 + 月 + 日 播報格式
+                val fullDate = SimpleDateFormat("yyyy 年 M 月 d 日", Locale.TAIWAN).format(record.date)
+                val speakText = "$fullDate，體重 ${record.weight} 公斤，屬於 $status"
+
                 if (isTtsEnabled) {
                     tts.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, null)
                 }
@@ -290,5 +301,4 @@ class ChartActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         cal.set(Calendar.MILLISECOND, 999)
         return cal.time
     }
-
 }

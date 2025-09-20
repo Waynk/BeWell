@@ -219,9 +219,12 @@ class ChartActivity : AppCompatActivity() {
         }
 
         // 圖表設定
-        lineChart.setScaleEnabled(false)
-        lineChart.setPinchZoom(false)
+        lineChart.setScaleEnabled(true)
+        lineChart.setPinchZoom(true)
+        lineChart.isDragEnabled = true
         lineChart.isDoubleTapToZoomEnabled = false
+
+        lineChart.setScaleYEnabled(false)       // 禁止 Y 軸縮放，只能 X 軸縮放
 
         lineChart.setExtraOffsets(20f, 70f, 20f, 60f)
         lineChart.xAxis.apply {
@@ -230,7 +233,7 @@ class ChartActivity : AppCompatActivity() {
             textColor = Color.DKGRAY
             textSize = 14f
             labelRotationAngle = -25f
-            setLabelCount(xLabels.size, false)
+
             granularity = 1f
             gridColor = Color.LTGRAY
             gridLineWidth = 1f
@@ -253,11 +256,11 @@ class ChartActivity : AppCompatActivity() {
             // ★ 讓 Y 軸一定包含對應的 LimitLine 值
             when (selectedDiseaseFilter) {
                 null, "血壓" -> {             // 血壓
-                    axisMinimum = 40f
+                    axisMinimum = 0f
                     axisMaximum = 200f
                 }
                 "脈搏" -> {                    // 脈搏 50 / 120
-                    axisMinimum = 40f
+                    axisMinimum = 0f
                     axisMaximum = 140f
                 }
                 "體重" -> {                    // 體重 45 / 80
@@ -280,6 +283,10 @@ class ChartActivity : AppCompatActivity() {
 
         lineChart.setExtraOffsets(10f, 30f, 10f, 10f)
         lineChart.data = LineData(dataSets as MutableList<ILineDataSet>)
+        // 設定最多一次顯示 7 筆，其他要靠拖曳
+        lineChart.setVisibleXRangeMaximum(7f)
+        // 預設移到最新的資料
+        lineChart.moveViewToX((xLabels.size - 1).toFloat())
 
         // MarkerView（只顯示，不做點擊；點擊交給雙擊手勢）
         val markerView = MyMarkerView(this, R.layout.custom_marker_view, lineChart, "", 1.7f).apply {
