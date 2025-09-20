@@ -850,29 +850,34 @@ app.get("/get_combined_records", async (req, res) => {
   try {
     const [rows] = await healthPool.query(
       `
+      WITH bp_ranked AS (
+        SELECT 
+          bp.id, bp.user_id,
+          CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
+          bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
+          ROW_NUMBER() OVER (PARTITION BY bp.user_id ORDER BY bp.measure_at ASC) AS rn
+        FROM BloodPressure bp
+      ),
+      wr_ranked AS (
+        SELECT 
+          wr.id, wr.user_id,
+          CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at,
+          wr.weight, wr.height,
+          ROW_NUMBER() OVER (PARTITION BY wr.user_id ORDER BY wr.measured_at ASC) AS rn
+        FROM weight_records wr
+      )
       SELECT 
         u.display_name, u.age, u.gender,
-        CONVERT_TZ(bp.measure_at, '+00:00', '+08:00') AS measure_at,
+        bp.measure_at,
         bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
-        wr.weight, wr.height AS weight_height,
-        CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at
-      FROM BloodPressure bp
+        wr.weight, wr.height AS weight_height, wr.weight_measured_at
+      FROM bp_ranked bp
       JOIN Users u 
         ON u.user_id = bp.user_id
-      LEFT JOIN weight_records wr
-  ON wr.user_id = u.user_id
-  AND wr.id = (
-    SELECT wr2.id
-    FROM weight_records wr2
-    WHERE wr2.user_id = u.user_id
-      AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) 
-          = DATE(CONVERT_TZ(wr2.measured_at, '+00:00', '+08:00'))
-    ORDER BY ABS(TIMESTAMPDIFF(SECOND, wr2.measured_at, bp.measure_at))
-    LIMIT 1
-  )
-
+      LEFT JOIN wr_ranked wr
+        ON wr.user_id = bp.user_id AND wr.rn = bp.rn
       WHERE u.username = ?
-      ORDER BY bp.measure_at ASC
+      ORDER BY bp.measure_at ASC;
       `,
       [username]
     );
@@ -885,6 +890,7 @@ app.get("/get_combined_records", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
 // 取得單一疾病對應的來源 URL
 app.get("/get_source_url", async (req, res) => {
   const disease = req.query.disease;
