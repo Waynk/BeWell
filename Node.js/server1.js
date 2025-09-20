@@ -856,11 +856,20 @@ app.get("/get_combined_records", async (req, res) => {
         bp.systolic_mmHg, bp.diastolic_mmHg, bp.pulse_bpm,
         wr.weight, wr.height AS weight_height,
         CONVERT_TZ(wr.measured_at, '+00:00', '+08:00') AS weight_measured_at
-        FROM BloodPressure bp
-        JOIN Users u ON u.user_id = bp.user_id
-        LEFT JOIN weight_records wr 
+      FROM BloodPressure bp
+      JOIN Users u 
+        ON u.user_id = bp.user_id
+      LEFT JOIN weight_records wr 
         ON wr.user_id = u.user_id
-        AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) = DATE(CONVERT_TZ(wr.measured_at, '+00:00', '+08:00'))
+        AND wr.measured_at = (
+          SELECT wr2.measured_at
+          FROM weight_records wr2
+          WHERE wr2.user_id = u.user_id
+            AND DATE(CONVERT_TZ(bp.measure_at, '+00:00', '+08:00')) 
+                = DATE(CONVERT_TZ(wr2.measured_at, '+00:00', '+08:00'))
+          ORDER BY ABS(TIMESTAMPDIFF(SECOND, wr2.measured_at, bp.measure_at))
+          LIMIT 1
+        )
       WHERE u.username = ?
       ORDER BY bp.measure_at ASC
       `,
@@ -875,7 +884,6 @@ app.get("/get_combined_records", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-
 // 取得單一疾病對應的來源 URL
 app.get("/get_source_url", async (req, res) => {
   const disease = req.query.disease;
