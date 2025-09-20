@@ -2325,8 +2325,8 @@ class SecondActivity : AppCompatActivity() {
     private fun updateAxisLabelsForLineChart() {
         yAxisLabel.text = "(%)"
         (yAxisLabel.layoutParams as FrameLayout.LayoutParams).apply {
-            topMargin = 100
-            leftMargin = 80
+            topMargin = 50
+            leftMargin = 40
         }
         yAxisLabel.requestLayout()
 
