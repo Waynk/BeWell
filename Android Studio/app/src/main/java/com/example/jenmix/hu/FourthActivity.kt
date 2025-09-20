@@ -561,25 +561,29 @@ class FourthActivity : AppCompatActivity() {
 
     private fun showDatePickers() {
         val calendar = Calendar.getInstance()
+        val dialogView = layoutInflater.inflate(R.layout.dialog_date_prompt, null)
 
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("開始選擇") { _, _ ->
+                DatePickerDialog(this, { _, year, month, day ->
+                    startDate = formatDate(year, month, day)
 
-        // 選起始日期
-        DatePickerDialog(this, { _, year, month, day ->
-            startDate = formatDate(year, month, day)
+                    DatePickerDialog(this, { _, y2, m2, d2 ->
+                        endDate = formatDate(y2, m2, d2)
 
+                        if (startDate != null && endDate != null) {
+                            // 可以加檢查結束日期不能早於開始日期
+                            fetchChartData(startDate!!, endDate!!)
+                        }
+                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
 
-            // 再選結束日期
-            DatePickerDialog(this, { _, y2, m2, d2 ->
-                endDate = formatDate(y2, m2, d2)
+                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            }
+            .setNegativeButton("取消", null)
+            .create()
 
-
-                if (startDate != null && endDate != null) {
-                    fetchChartData(startDate!!, endDate!!)
-                }
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
-
-
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        dialog.show()
     }
 
 

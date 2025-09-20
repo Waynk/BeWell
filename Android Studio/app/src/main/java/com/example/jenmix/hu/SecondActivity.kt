@@ -922,34 +922,40 @@ class SecondActivity : AppCompatActivity() {
 
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
+        val dialogView = layoutInflater.inflate(R.layout.dialog_date_prompt, null)
 
-
-        DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                startDate = "$year-${month + 1}-$dayOfMonth"
-
-
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("開始選擇") { _, _ ->
+                // 點確定後跳開始日期
                 DatePickerDialog(
                     this,
-                    { _, endYear, endMonth, endDay ->
-                        endDate = "$endYear-${endMonth + 1}-$endDay"
-                        showFilterOptions()
+                    { _, year, month, dayOfMonth ->
+                        startDate = "$year-${month + 1}-$dayOfMonth"
+
+                        // 選結束日期
+                        DatePickerDialog(
+                            this,
+                            { _, endYear, endMonth, endDay ->
+                                endDate = "$endYear-${endMonth + 1}-$endDay"
+                                showFilterOptions()
+                            },
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)
+                        ).show()
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
                 ).show()
+            }
+            .setNegativeButton("取消", null)
+            .create()
 
-
-
-
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        dialog.show()
     }
+
 
 
 
